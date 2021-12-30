@@ -3,7 +3,7 @@
 	"tasks": [
 		{
 			"type": "cppbuild",
-			"label": "C/C++: clang build active file",
+			"label": "clang build project",
 			"command": "/usr/bin/clang",
 			"args": [
 				"-fdiagnostics-color=always",
