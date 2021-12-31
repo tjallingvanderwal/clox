@@ -12,6 +12,10 @@ int main(int argc, const char* argv[]){
     initChunk(&chunk);
 
     writeConstant(&chunk, 1.2, 10);
+    writeConstant(&chunk, 3.4, 11);
+    writeChunk(&chunk, OP_ADD, 11);
+    writeConstant(&chunk, 5.6, 12);
+    writeChunk(&chunk, OP_DIVIDE, 12);
     writeChunk(&chunk, OP_NEGATE, 10);
     writeChunk(&chunk, OP_RETURN, 10);
 
