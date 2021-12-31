@@ -35,8 +35,9 @@ static InterpretResult run(){
 #define BINARY_OP(op) \
     do { \
         double b = pop(); \
-        double a = pop(); \
-        push(a op b); \
+        Value* top = (vm.stackTop - 1); \
+        double a = *top; \
+        *top = a op b; \
     } while (false)
 
 
@@ -64,7 +65,8 @@ static InterpretResult run(){
                 break;
             }
             case OP_NEGATE: {
-                push(-pop());
+                Value* top = (vm.stackTop - 1);
+                *top = -*top;
                 break;
             }
             case OP_ADD:      BINARY_OP(+); break;
