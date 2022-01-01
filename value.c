@@ -25,6 +25,11 @@ void freeValueArray(ValueArray* array){
     initValueArray(array);
 }
 
-void printValue(Value value){
-    printf("%g", value);
+void fprintValue(FILE* stream, Value value){
+    fprintf(stream, "%g", value);
 }
+
+void printValue(Value value){
+    fprintValue(stdout, value);
+}
+

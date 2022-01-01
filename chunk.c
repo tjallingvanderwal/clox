@@ -49,19 +49,19 @@ void writeConstant(Chunk* chunk, Value value, int line){
         writeOperandLong(chunk, constant, line);
     }
     else {
-        printf("INTERNAL: Exceeded max. constants in chunk. ");
-        printf("Last constant: '");
-        printValue(value);
-        printf("'\n");
-        exit(1);
+        fprintf(stderr, "INTERNAL: Exceeded max. constants in chunk. ");
+        fprintf(stderr, "Last constant: '");
+        fprintValue(stderr, value);
+        fprintf(stderr, "'\n");
+        exit(74);
     }
 }
 
 // Writes the last 3 bytes of an int to a Chunk.
 void writeOperandLong(Chunk* chunk, int operand, int line){
     if ((operand & 0xFF000000) != 0){
-        printf("INTERNAL: Long operand too long: %d at line %d\n", operand, line);
-        exit(1);
+        fprintf(stderr, "INTERNAL: Long operand too long: %d at line %d\n", operand, line);
+        exit(174);
     }
     writeChunk(chunk,  operand      & 0x000000FF, line);
     writeChunk(chunk, (operand>> 8) & 0x000000FF, line);
