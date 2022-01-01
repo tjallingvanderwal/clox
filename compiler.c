@@ -13,10 +13,19 @@ void compile(const char* source){
             printf("%4d ", token.line);
             line = token.line;
         } else {
-            printf("   |");
+            printf("   | ");
         }
-        printf("%2d '%.*s'\n", token.type, token.length, token.start);
 
-        if (token.type == TOKEN_EOF) break;
+
+        if (token.type == TOKEN_ERROR){
+            printf("%2d <%.*s>\n", token.type, token.length, token.start);
+        }
+        else if (token.type == TOKEN_EOF){
+            printf("%2d <EOF>\n", token.type);
+            break;
+        }
+        else {
+            printf("%2d '%.*s'\n", token.type, token.length, token.start);
+        }
     }
 }

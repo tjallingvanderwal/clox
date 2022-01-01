@@ -91,6 +91,7 @@ static void skipWhitespace(){
                 } else {
                     return;
                 }
+                break;
             default:
                 return; 
         }
@@ -140,8 +141,8 @@ static TokenType identfierType(){
 }
 
 static Token scanIdentifier(){
-    while (isAlpha(peek() || isDigit(peek()))) advance();
-    return makeToken(identfierType());
+    while (isAlpha(peek()) || isDigit(peek())) advance();
+    return makeToken(TOKEN_IDENTIFIER);
 }
 
 static Token scanNumber(){
@@ -175,7 +176,7 @@ Token scanToken(){
     skipWhitespace();
     scanner.start = scanner.current;
 
-    if (!isAtEnd()) return makeToken(TOKEN_EOF);
+    if (isAtEnd()) return makeToken(TOKEN_EOF);
 
     char c = advance();
 
@@ -201,5 +202,8 @@ Token scanToken(){
         case '"': return scanString();
     }
 
+    // printf("Unexpected character: ");
+    // printf("%c %d", c, (int)c);
+    // printf("\n");
     return errorToken("Unexpected character.");
 }
