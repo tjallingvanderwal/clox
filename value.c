@@ -26,7 +26,7 @@ void freeValueArray(ValueArray* array){
 }
 
 void fprintValue(FILE* stream, Value value){
-    fprintf(stream, "%g", value);
+    fprintf(stream, "%g", AS_NUMBER(value));
 }
 
 void printValue(Value value){
