@@ -75,6 +75,7 @@ static InterpretResult run(){
             case OP_MULTIPLY: BINARY_OP(*); break;
             case OP_DIVIDE:   BINARY_OP(/); break;
             case OP_RETURN: {
+                printf("\n");
                 printValue(pop());
                 printf("\n");
                 return INTERPRET_OK;

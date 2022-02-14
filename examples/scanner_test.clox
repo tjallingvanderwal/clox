@@ -4,7 +4,13 @@ return (
 
 print 1 + 2;  // returns 3
 
+// # 
+
 print "foo bar baz";
 
 while (true){ do_something; }
 
+fun method(arg){
+    method2()
+    return nil;
+}
