@@ -38,7 +38,10 @@ int addConstant(Chunk* chunk, Value value){
     return chunk->constants.count - 1;
 }
 
-void writeConstant(Chunk* chunk, Value value, int line){
+// Adds Value to the constant pool
+// and writes appropriate opcode+operand
+// to the code section to load the constant.
+void writeOPConstant(Chunk* chunk, Value value, int line){
     int constant = addConstant(chunk, value);
     if (constant < 4){
         writeChunk(chunk, OP_CONSTANT, line);
