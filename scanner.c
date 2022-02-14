@@ -142,7 +142,7 @@ static TokenType identfierType(){
 
 static Token scanIdentifier(){
     while (isAlpha(peek()) || isDigit(peek())) advance();
-    return makeToken(TOKEN_IDENTIFIER);
+    return makeToken(identfierType());
 }
 
 static Token scanNumber(){

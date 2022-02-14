@@ -26,7 +26,20 @@ void freeValueArray(ValueArray* array){
 }
 
 void fprintValue(FILE* stream, Value value){
-    fprintf(stream, "%g", AS_NUMBER(value));
+    switch(value.type){
+        case VAL_BOOL: {
+            fprintf(stream, AS_BOOL(value) ? "true" : "false");
+            break;
+        }
+        case VAL_NIL: {
+            fprintf(stream, "nil");
+            break;
+        } 
+        case VAL_NUMBER: {
+            fprintf(stream, "%g", AS_NUMBER(value));
+            break;
+        }
+    }
 }
 
 void printValue(Value value){
