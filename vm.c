@@ -58,11 +58,11 @@ static InterpretResult run(){
 #define BINARY_OP(valueType, op) \
     do { \
         if (!IS_NUMBER(peek(0)) || !IS_NUMBER(peek(1))){ \
-            runtimeError("Operand must be numbers."); \
+            runtimeError("Error %s: Operand must be numbers.", __LINE__); \
             return INTERPRET_RUNTIME_ERROR; \
         } \
-        double a = AS_NUMBER(pop()); \
         double b = AS_NUMBER(pop()); \
+        double a = AS_NUMBER(pop()); \
         push(valueType(a op b)); \
     } while (false)
 
@@ -102,9 +102,23 @@ static InterpretResult run(){
                 push(BOOL_VAL(false));
                 break;
             }
+            case OP_EQUAL: {
+                Value b = pop();
+                Value a = pop();
+                push(BOOL_VAL(valuesEqual(a, b)));
+                break;
+            }
+            case OP_GREATER: {
+                BINARY_OP(BOOL_VAL, >);
+                break;
+            }
+            case OP_LESS: {
+                BINARY_OP(BOOL_VAL, <);
+                break;
+            }
             case OP_NEGATE: {
                 if (!IS_NUMBER(peek(0))){
-                    runtimeError("Operand must be a number");
+                    runtimeError("Error %s: Operand must be a number", __LINE__);
                     return INTERPRET_RUNTIME_ERROR;
                 }
                 push(NUMBER_VAL(-AS_NUMBER(pop())));
