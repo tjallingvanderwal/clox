@@ -59,8 +59,14 @@ static bool isFalsey(Value value){
 }
 
 static void concatenate(){
-    ObjString* b = AS_STRING(pop());
-    ObjString* a = AS_STRING(pop());
+    Value val_b = pop();
+    Value val_a = pop();
+    ObjString* b = AS_STRING(val_b);
+    ObjString* a = AS_STRING(val_a);
+
+    if (b->length == 0){ push(val_a); return; }
+    if (a->length == 0){ push(val_b); return; }
+
     int length = a->length + b->length;
     char* chars = ALLOCATE(char, length+ 1 );
     memcpy(chars            , a->chars, a->length);
