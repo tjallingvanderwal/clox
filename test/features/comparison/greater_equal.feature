@@ -15,6 +15,8 @@ Example: Non-Numbers
     Then the script fails with "Operands must be numbers."
     When evaluating "3 >= nil"
     Then the script fails with "Operands must be numbers."
+    When evaluating "3 >= '3'"
+    Then the script fails with "Operands must be numbers."
 
 Example: Bytecode for a>=b is !(a<b)
     When compiling "2 >= 1"
