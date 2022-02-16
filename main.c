@@ -2,7 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "debug.h"
 #include "common.h"
+#include "compiler.h"
 #include "vm.h"
 
 static void repl(){
@@ -15,7 +17,12 @@ static void repl(){
             break;
         }
 
-        interpret(line);
+        if (memcmp(line, "quit", 4)==0){
+            exit(0);
+        }
+        else{
+            interpret(line);
+        }
     }
 }
 
@@ -55,6 +62,26 @@ static void runFile(const char* path){
     if (result == INTERPRET_RUNTIME_ERROR) exit(70);
 }
 
+static void eval(const char* expression){
+    InterpretResult result = interpret(expression);
+    if (result == INTERPRET_COMPILE_ERROR) exit(65);
+    if (result == INTERPRET_RUNTIME_ERROR) exit(70);
+}
+
+static void printBytecode(const char* source){
+    Chunk chunk;
+    initChunk(&chunk);
+
+    if (!compile(source, &chunk)){
+        exit(65);
+    } 
+    else {
+        // already printed because of DEBUG_PRINT_CODE
+        // disassembleChunk(&chunk, "code");
+    }
+    freeChunk(&chunk);
+}
+
 int main(int argc, const char* argv[]){
     initVM();
 
@@ -62,8 +89,14 @@ int main(int argc, const char* argv[]){
         repl();
     } else if (argc == 2){
         runFile(argv[1]);
+    } else if (argc == 3 && memcmp(argv[1], "--eval", 6) == 0){
+        eval(argv[2]);
+    } else if (argc == 3 && memcmp(argv[1], "--bytecode", 10) == 0){
+        printBytecode(argv[2]);
     } else {
         fprintf(stderr, "Usage: clox [path]\n");
+        fprintf(stderr, "Usage: clox --bytecode \"expression\"\n");
+        fprintf(stderr, "Usage: clox --eval \"expression\"\n");
         exit(64);
     }
 

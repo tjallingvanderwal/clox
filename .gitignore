@@ -1,2 +1,6 @@
 clox
 clox.*
+
+test/Gemfile.lock
+test/.ruby-version
+test/cucumber.yml

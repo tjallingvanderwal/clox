@@ -13,6 +13,10 @@ static void resetStack(){
     vm.stackTop = vm.stack;
 }
 
+static bool stackEmpty(){
+    return vm.stackTop == vm.stack;
+}
+
 static void runtimeError(const char* format, ...){
     va_list args;
     va_start(args, format);
@@ -58,7 +62,7 @@ static InterpretResult run(){
 #define BINARY_OP(valueType, op) \
     do { \
         if (!IS_NUMBER(peek(0)) || !IS_NUMBER(peek(1))){ \
-            runtimeError("Error %s: Operand must be numbers.", __LINE__); \
+            runtimeError("Operands must be numbers."); \
             return INTERPRET_RUNTIME_ERROR; \
         } \
         double b = AS_NUMBER(pop()); \
@@ -66,16 +70,24 @@ static InterpretResult run(){
         push(valueType(a op b)); \
     } while (false)
 
+#ifdef DEBUG_TRACE_EXECUTION
+    printf("\n== execution ==\n");
+#endif
 
     for (;;){
 #ifdef DEBUG_TRACE_EXECUTION
-    printf("         ");
-    for (Value* slot = vm.stack; slot < vm.stackTop; slot++){
-        printf("[ ");
-        printValue(*slot);
-        printf(" ]");
+    if (stackEmpty()){
+        printf("         [ stack empty ]\n");
     }   
-    printf("\n");     
+    else {
+        printf("         ");
+        for (Value* slot = vm.stack; slot < vm.stackTop; slot++){
+            printf("[ ");
+            printValue(*slot);
+            printf(" ]");
+        }   
+        printf("\n");     
+    }
     disassembleInstruction(vm.chunk, (int)(vm.ip - vm.chunk->code));
 #endif
         uint8_t instruction;
@@ -135,9 +147,11 @@ static InterpretResult run(){
                 break;
             }
             case OP_RETURN: {
-                printf("\n");
+#ifdef DEBUG_TRACE_EXECUTION                
+                printf("\n== result ==\n");
                 printValue(pop());
                 printf("\n");
+#endif                
                 return INTERPRET_OK;
             }
         }
