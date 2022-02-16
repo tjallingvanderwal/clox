@@ -6,9 +6,9 @@ Then('the result is {string}') do |expected|
     expect(@stdout.lines.last.chomp).to eql(expected)
 end
 
-Then('the result contains {string}') do |expected|
+Then('the result is the string {string}') do |expected|
     expect(@status.exitstatus).to eql(0)
-    expect(@stdout.lines.last).to include(expected)
+    expect(@stdout.lines.last.chomp).to eql("\"#{expected}\"")
 end
 
 Then('the script fails with {string}') do |expected|

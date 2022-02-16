@@ -2,15 +2,15 @@ Feature: Strings | "+" as concatenation operator
 
 Example: Strings can be concatenated
     When evaluating "'st' + 'ri' + 'ng'"
-    Then the result contains "string"
+    Then the result is the string "string"
 
 Example: An empty String can be appended to another String
     When evaluating "'prefix' + ''"
-    Then the result contains "prefix"
+    Then the result is the string "prefix"
 
 Example: An empty String can be prepended to another String
     When evaluating "'' + 'postfix'"
-    Then the result contains "postfix"
+    Then the result is the string "postfix"
 
 Example: Strings and other values cannot be concatenated to each other
     When evaluating "1 + 'x'"
