@@ -159,8 +159,8 @@ static Token scanNumber(){
     return makeToken(TOKEN_NUMBER);
 }
 
-static Token scanString(){
-    while (peek() != '"' && !isAtEnd()){
+static Token scanString(char terminator){
+    while (peek() != terminator && !isAtEnd()){
         if (peek() == '\n') scanner.line++;
         advance();
     }
@@ -199,7 +199,8 @@ Token scanToken(){
         case '=': return makeToken(match('=') ? TOKEN_EQUAL_EQUAL   : TOKEN_EQUAL);
         case '<': return makeToken(match('=') ? TOKEN_LESS_EQUAL    : TOKEN_LESS);
         case '>': return makeToken(match('=') ? TOKEN_GREATER_EQUAL : TOKEN_GREATER);
-        case '"': return scanString();
+        case '"': return scanString('"');
+        case '\'': return scanString('\'');
     }
 
     // printf("Unexpected character: ");

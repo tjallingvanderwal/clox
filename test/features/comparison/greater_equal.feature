@@ -21,8 +21,8 @@ Example: Bytecode for a>=b is !(a<b)
     Then the bytecode looks like:
         ```
         == code ==
-        0000    1 OP_CONSTANT           0   # '2'
-        0002    | OP_CONSTANT           1   # '1'
+        0000    1 OP_CONSTANT           0   # 2
+        0002    | OP_CONSTANT           1   # 1
         0004    | OP_LESS         
         0005    | OP_NOT          
         0006    | OP_RETURN       

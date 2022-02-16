@@ -21,9 +21,9 @@ static int simpleInstruction(const char* name, int offset){
 }
 
 static void printConstantInstruction(const char* name, Chunk* chunk, int constant){
-    printf("%-16s %6d   # '", name, constant);
+    printf("%-16s %6d   # ", name, constant);
     printValue(chunk->constants.values[constant]);
-    printf("'\n");
+    printf("\n");
 }
 
 static int constantInstruction(const char* name, Chunk* chunk, int offset){
