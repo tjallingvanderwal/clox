@@ -5,7 +5,19 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#define DEBUG_PRINT_CODE
-#define DEBUG_TRACE_EXECUTION
+typedef struct {
+    bool eval;
+    bool file;
+    bool help;
+    bool noExecution;
+    bool printResult;
+    bool printResultVerbose;
+    bool repl;
+    bool showBytecode;
+    bool traceExecution;
+    int evalExpressionIndex;
+    int filePathIndex;
+} CloxRun;
+extern CloxRun cloxRun;
 
 #endif

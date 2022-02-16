@@ -16,6 +16,15 @@ Then('the script fails with {string}') do |expected|
     expect(@stderr).to include(expected)
 end
 
+Then('clox fails with:') do |doc_string|
+    expect(@status.exitstatus).not_to eql(0)
+    expect(@stderr.chomp).to eql(doc_string)
+end
+
+Then('clox prints to stdout:') do |doc_string|
+    expect(@stdout.chomp).to eql(doc_string)
+end
+
 Then('the bytecode looks like:') do |doc_string|
     expect(@stdout.squish).to eql(doc_string.squish)
 end

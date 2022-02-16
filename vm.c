@@ -91,26 +91,28 @@ static InterpretResult run(){
         push(valueType(a op b)); \
     } while (false)
 
-#ifdef DEBUG_TRACE_EXECUTION
-    printf("\n== execution ==\n");
-#endif
+    bool trace = cloxRun.traceExecution;
+
+    if (trace){
+        printf("\n== execution ==\n");
+    }
 
     for (;;){
-#ifdef DEBUG_TRACE_EXECUTION
-    if (stackEmpty()){
-        printf("         [ stack empty ]\n");
-    }   
-    else {
-        printf("         ");
-        for (Value* slot = vm.stack; slot < vm.stackTop; slot++){
-            printf("[ ");
-            printValue(*slot);
-            printf(" ]");
-        }   
-        printf("\n");     
-    }
-    disassembleInstruction(vm.chunk, (int)(vm.ip - vm.chunk->code));
-#endif
+        if (trace){
+            if (stackEmpty()){
+                printf("         [ stack empty ]\n");
+            }   
+            else {
+                printf("         ");
+                for (Value* slot = vm.stack; slot < vm.stackTop; slot++){
+                    printf("[ ");
+                    printValue(*slot);
+                    printf(" ]");
+                }   
+                printf("\n");     
+            }
+            disassembleInstruction(vm.chunk, (int)(vm.ip - vm.chunk->code));    
+        }
         uint8_t instruction;
         switch (instruction = READ_BYTE()){
             case OP_CONSTANT: {
@@ -182,11 +184,15 @@ static InterpretResult run(){
                 break;
             }
             case OP_RETURN: {
-#ifdef DEBUG_TRACE_EXECUTION                
-                printf("\n== result ==\n");
-                printValue(pop());
-                printf("\n");
-#endif                
+                if (cloxRun.printResultVerbose){
+                    printf("\n== result ==\n");
+                    printValue(pop());
+                    printf("\n");
+                }
+                else if (cloxRun.printResult){                   
+                    printValue(pop());
+                    printf("\n");
+                }  
                 return INTERPRET_OK;
             }
         }
@@ -199,18 +205,23 @@ static InterpretResult run(){
 }
 
 InterpretResult interpret(const char* source){
+    InterpretResult result;
     Chunk chunk;
     initChunk(&chunk);
 
-    if (!compile(source, &chunk)){
-        freeChunk(&chunk);
-        return INTERPRET_COMPILE_ERROR;
+    if (compile(source, &chunk)){
+        if (cloxRun.noExecution){
+            result = INTERPRET_OK;
+        }
+        else {
+            vm.chunk = &chunk;
+            vm.ip = vm.chunk->code;
+            result = run();
+        }    
     }
-
-    vm.chunk = &chunk;
-    vm.ip = vm.chunk->code;
-
-    InterpretResult result = run();
+    else {
+        result = INTERPRET_COMPILE_ERROR;
+    }
 
     freeChunk(&chunk);
     return result;

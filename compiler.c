@@ -1,14 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "debug.h"
 #include "common.h"
 #include "compiler.h"
 #include "scanner.h"
 #include "object.h"
-
-#ifdef DEBUG_PRINT_CODE
-#include "debug.h"
-#endif
 
 typedef struct {
     Token current;
@@ -115,11 +112,9 @@ static void emitConstant(Value value){
 
 static void endCompiler(){
     emitReturn();
-#ifdef DEBUG_PRINT_CODE
-    if (!parser.hadError){
+    if (cloxRun.showBytecode){
         disassembleChunk(currentChunk(), "code");
     }
-#endif
 }
 
 static void expression();
