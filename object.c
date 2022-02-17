@@ -17,16 +17,27 @@ static Obj* allocateObject(size_t size, ObjType type){
     return object;
 }
 
-static ObjString* allocateString(char* chars, int length, bool owned){
+static ObjString* allocateString(char* chars, int length, uint32_t hash, bool owned){
     ObjString* string = ALLOCATE_OBJECT(ObjString, OBJ_STRING);
     string->length = length;
     string->chars = chars;
+    string->hash = hash;
     string->owned = owned;
     return string;
 }
 
+static uint32_t hashString(const char* key, int length){
+    uint32_t hash = 2166136261u;
+    for (int i = 0; i < length; i++){
+        hash ^= (uint32_t)key[i];
+        hash *= 16777619;
+    }
+    return hash;
+}
+
 ObjString* takeString(char* chars, int length){
-    return allocateString(chars, length, true);
+    uint32_t hash = hashString(chars, length);
+    return allocateString(chars, length, hash, true);
 }
 
 ObjString* copyString(char* chars, int length){
@@ -34,7 +45,8 @@ ObjString* copyString(char* chars, int length){
     // memcpy(heapChars, chars, length);
     // heapChars[length] = '\0';
     // return allocateString(heapChars, length);
-    return allocateString(chars, length, false);
+    uint32_t hash = hashString(chars, length);
+    return allocateString(chars, length, hash, false);
 }
 
 void fprintObj(FILE* stream, Obj* object){
