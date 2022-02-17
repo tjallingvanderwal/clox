@@ -1,4 +1,4 @@
-Feature: Command Line | Printing help
+Feature: Command Line | --help
 
 Example: --help prints the help
     When running clox with "--help"

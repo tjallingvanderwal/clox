@@ -3,12 +3,12 @@ require 'active_support/all'
 
 Then('the result is {string}') do |expected|
     expect(@status.exitstatus).to eql(0)
-    expect(@stdout.lines.last.chomp).to eql(expected)
+    expect(@stdout.chomp).to eql(expected)
 end
 
 Then('the result is the string {string}') do |expected|
     expect(@status.exitstatus).to eql(0)
-    expect(@stdout.lines.last.chomp).to eql("\"#{expected}\"")
+    expect(@stdout.chomp).to eql("\"#{expected}\"")
 end
 
 Then('the script fails with {string}') do |expected|

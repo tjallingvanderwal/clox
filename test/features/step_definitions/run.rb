@@ -1,19 +1,19 @@
 require 'open3'
 
 When('running clox with {string}') do |commandline|
-    lox_executable = ENV['LOX_EXECUTABLE']
-    @stdout, @stderr, @status = Open3.capture3("#{lox_executable} #{commandline}")
+    clox = ENV['CLOX_EXECUTABLE']
+    @stdout, @stderr, @status = Open3.capture3("#{clox} #{commandline}")
 end
 
 When('evaluating {string}') do |expression|
-    lox_executable = ENV['LOX_EXECUTABLE']
+    clox = ENV['CLOX_EXECUTABLE']
     raise "Use single quotes" if expression.include?('"')
-    @stdout, @stderr, @status = Open3.capture3("#{lox_executable} --eval \"#{expression}\"")
+    @stdout, @stderr, @status = Open3.capture3("#{clox} --eval \"#{expression}\"")
 end
 
 When('compiling {string}') do |expression|
-    lox_executable = ENV['LOX_EXECUTABLE']
+    clox = ENV['CLOX_EXECUTABLE']
     raise "Use only single quotes" if expression.include?('"')
-    @stdout, @stderr, @status = Open3.capture3("#{lox_executable} --bytecode --eval \"#{expression}\"")
+    @stdout, @stderr, @status = Open3.capture3("#{clox} --bytecode --eval \"#{expression}\"")
 end
 

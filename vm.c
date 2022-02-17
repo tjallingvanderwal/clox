@@ -153,7 +153,7 @@ static InterpretResult run(){
             }
             case OP_NEGATE: {
                 if (!IS_NUMBER(peek(0))){
-                    runtimeError("Error %s: Operand must be a number", __LINE__);
+                    runtimeError("Operand must be a number");
                     return INTERPRET_RUNTIME_ERROR;
                 }
                 push(NUMBER_VAL(-AS_NUMBER(pop())));
