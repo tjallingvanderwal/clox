@@ -37,6 +37,6 @@ Example: When the expression contains a runtime error
     When running clox with "--eval '-true'"
     Then clox fails with:
     ```
-    Operand must be a number
+    Operand must be a number.
     [line 1] in script
     ```
