@@ -173,13 +173,12 @@ static InterpretResult run(){
                 break;
             }
             case OP_NEGATE: {
-                if (!IS_NUMBER(peek(0))){
-                    runtimeError("Operand must be a number");
+                Value* top = (vm.stackTop - 1);
+                if (!IS_NUMBER(*top)){
+                    runtimeError("Operand must be a number.");
                     return INTERPRET_RUNTIME_ERROR;
-                }
-                push(NUMBER_VAL(-AS_NUMBER(pop())));
-                // Value* top = (vm.stackTop - 1);
-                // *top = -*top;
+                }     
+                top->as.number = -(top->as.number);
                 break;
             }
             case OP_ADD: {
@@ -201,7 +200,8 @@ static InterpretResult run(){
             case OP_MULTIPLY: BINARY_OP(NUMBER_VAL, *); break;
             case OP_DIVIDE:   BINARY_OP(NUMBER_VAL, /); break;
             case OP_NOT: {
-                push(BOOL_VAL(isFalsey(pop())));
+                Value* top = (vm.stackTop - 1);
+                *top = BOOL_VAL(isFalsey(*top));
                 break;
             }
             case OP_RETURN: {

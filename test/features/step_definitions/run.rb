@@ -22,6 +22,12 @@ When('evaluating {string}') do |expression|
     @stdout, @stderr, @status = Open3.capture3("#{clox} --eval \"#{expression}\"")
 end
 
+When('evaluating {string} with tracing') do |expression|
+    clox = ENV['CLOX_EXECUTABLE']
+    raise "Use single quotes" if expression.include?('"')
+    @stdout, @stderr, @status = Open3.capture3("#{clox} --eval \"#{expression}\" --trace")
+end
+
 When('compiling {string}') do |expression|
     clox = ENV['CLOX_EXECUTABLE']
     raise "Use only single quotes" if expression.include?('"')
