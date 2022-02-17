@@ -15,6 +15,7 @@ typedef struct {
     bool repl;
     bool showBytecode;
     bool traceExecution;
+    bool traceMemory;
     int evalExpressionIndex;
     int filePathIndex;
 } CloxRun;

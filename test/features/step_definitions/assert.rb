@@ -22,7 +22,7 @@ Then('clox fails with:') do |doc_string|
 end
 
 Then('clox prints to stdout:') do |doc_string|
-    expect(@stdout.chomp).to eql(doc_string)
+    expect(@stdout.squish).to eql(doc_string.squish)
 end
 
 Then('the bytecode looks like:') do |doc_string|

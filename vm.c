@@ -94,6 +94,7 @@ static InterpretResult run(){
     } while (false)
 
     bool trace = cloxRun.traceExecution;
+    bool traceMemory = cloxRun.traceMemory;
 
     if (trace){
         printf("\n== execution ==\n");
@@ -102,16 +103,32 @@ static InterpretResult run(){
     for (;;){
         if (trace){
             if (stackEmpty()){
-                printf("         [ stack empty ]\n");
+                printf("          stack: <empty>\n");
             }   
             else {
-                printf("         ");
+                printf("          stack: ");
                 for (Value* slot = vm.stack; slot < vm.stackTop; slot++){
                     printf("[ ");
                     printValue(*slot);
                     printf(" ]");
                 }   
                 printf("\n");     
+            }
+            if (traceMemory){
+                if (vm.objects == NULL){
+                    printf("          heap : <empty>\n");
+                } 
+                else {
+                    printf("          heap : ");
+                    Obj* object = vm.objects;
+                    while (object != NULL){
+                        printf("[ ");
+                        printObj(object);
+                        printf(" ]");
+                        object = object->next;
+                    }  
+                    printf("\n");  
+                }
             }
             disassembleInstruction(vm.chunk, (int)(vm.ip - vm.chunk->code));    
         }

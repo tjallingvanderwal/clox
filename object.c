@@ -35,6 +35,19 @@ ObjString* copyString(const char* chars, int length){
     return allocateString(heapChars, length);
 }
 
+void fprintObj(FILE* stream, Obj* object){
+    switch(object->type){
+        case OBJ_STRING: {
+            fprintf(stream, "<String \"%s\">", ((ObjString*)object)->chars);
+            break;
+        }
+    }
+}
+
+void printObj(Obj* object){
+    fprintObj(stdout, object);
+}
+
 void fprintObject(FILE* stream, Value value){
     switch(OBJ_TYPE(value)){
         case OBJ_STRING: {
