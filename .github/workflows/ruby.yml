@@ -5,7 +5,7 @@
 # This workflow will download a prebuilt Ruby version, install dependencies and run tests with Rake
 # For more information see: https://github.com/marketplace/actions/setup-ruby-jruby-and-truffleruby
 
-name: Ruby
+name: Cucumber
 
 on:
   push:
@@ -17,9 +17,6 @@ jobs:
   test:
 
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        ruby-version: ['3.0']
 
     steps:
     - uses: actions/checkout@v2
@@ -29,11 +26,15 @@ jobs:
     # uses: ruby/setup-ruby@v1
       uses: ruby/setup-ruby@473e4d8fe5dd94ee328fdfca9f8c9c7afc9dae5e
       with:
-        ruby-version: ${{ matrix.ruby-version }}
+        ruby-version: '3.0'
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
         working-directory: test
-    - name: Run tests
+
+    - name: Compile Clox
       run: |
         /usr/bin/clang *.c -o clox
         cd test
+        
+    - name: Run Cucumber tests
+      run: |
         bundle exec cucumber
