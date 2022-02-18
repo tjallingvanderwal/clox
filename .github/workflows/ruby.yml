@@ -33,8 +33,8 @@ jobs:
     - name: Compile Clox
       run: |
         /usr/bin/clang *.c -o clox
-        cd test
         
     - name: Run Cucumber tests
       run: |
+        cd test
         bundle exec cucumber
