@@ -11,16 +11,16 @@ Example: Two identical literals point to the same ObjString object
     ```
     == execution ==
             stack: <empty>
-            heap : [ <String(C) "a"> ]
+            heap : [ <String "a"> ]
     0000    1 OP_CONSTANT           0   # "a"
             stack: [ "a" ]
-            heap : [ <String(C) "a"> ]
+            heap : [ <String "a"> ]
     0002    | OP_CONSTANT           1   # "a"
             stack: [ "a" ][ "a" ]
-            heap : [ <String(C) "a"> ]
+            heap : [ <String "a"> ]
     0004    | OP_ADD          
             stack: [ "aa" ]
-            heap : [ <String(O) "aa"> ][ <String(C) "a"> ]
+            heap : [ <String "aa"> ][ <String "a"> ]
     0005    | OP_RETURN       
 
     == result ==
@@ -38,22 +38,22 @@ Example: The result of a concatenation is mapped to be the same ObjString as a l
     ```
     == execution ==
             stack: <empty>
-            heap : [ <String(C) "aa"> ][ <String(C) "a"> ]
+            heap : [ <String "aa"> ][ <String "a"> ]
     0000    1 OP_CONSTANT           0   # "a"
             stack: [ "a" ]
-            heap : [ <String(C) "aa"> ][ <String(C) "a"> ]
+            heap : [ <String "aa"> ][ <String "a"> ]
     0002    | OP_CONSTANT           1   # "a"
             stack: [ "a" ][ "a" ]
-            heap : [ <String(C) "aa"> ][ <String(C) "a"> ]
+            heap : [ <String "aa"> ][ <String "a"> ]
     0004    | OP_ADD          
             stack: [ "aa" ]
-            heap : [ <String(C) "aa"> ][ <String(C) "a"> ]
+            heap : [ <String "aa"> ][ <String "a"> ]
     0005    | OP_CONSTANT           2   # "aa"
             stack: [ "aa" ][ "aa" ]
-            heap : [ <String(C) "aa"> ][ <String(C) "a"> ]
+            heap : [ <String "aa"> ][ <String "a"> ]
     0007    | OP_EQUAL        
             stack: [ true ]
-            heap : [ <String(C) "aa"> ][ <String(C) "a"> ]
+            heap : [ <String "aa"> ][ <String "a"> ]
     0008    | OP_RETURN       
 
     == result ==

@@ -25,12 +25,11 @@ struct Obj {
 struct ObjString {
     Obj obj;
     int length;
-    bool owned;
     char* chars;
     uint32_t hash;
 };
 
-ObjString* copyString(char* chars, int length);
+ObjString* copyString(const char* chars, int length);
 ObjString* takeString(char* chars, int length);
 
 void fprintObject(FILE* stream, Value value);
