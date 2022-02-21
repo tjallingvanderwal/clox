@@ -16,6 +16,7 @@ Example: OP_CONSTANT_LONG is used when there are more than 4 constants
         0015    | OP_ADD          
         0016    | OP_CONSTANT_LONG      5   # "6"
         0020    | OP_ADD          
-        0021    | OP_RETURN       
-        12 opcodes (22 bytes), 6 constants
+        0021    | OP_POP
+        0022    | OP_RETURN         
+        13 opcodes (23 bytes), 6 constants
         ```

@@ -22,8 +22,11 @@ Example: --memory shows allocated objects during every step of execution
     0007    | OP_ADD          
             stack: [ "abc" ]
             heap : [ <String "abc"> ][ <String "ab"> ][ <String "c"> ][ <String "b"> ][ <String "a"> ]
-    0008    2 OP_RETURN       
+    0008    | OP_PRINT        
 
-    == result ==
+    == output ==
     "abc"
+            stack: <empty>
+            heap : [ <String "abc"> ][ <String "ab"> ][ <String "c"> ][ <String "b"> ][ <String "a"> ]
+    0009    2 OP_RETURN      
     ```

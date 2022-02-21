@@ -34,8 +34,11 @@ Example: The stack is modified in-place
             stack: [ 2 ][ 3 ]
     0006    | OP_ADD          
             stack: [ 5 ]
-    0007    | OP_RETURN       
-
-    == result ==
+    0007    | OP_PRINT
+    
+    == output ==
     5
+        
+            stack: <empty>
+    0008    | OP_RETURN          
     ```

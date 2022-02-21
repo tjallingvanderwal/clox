@@ -6,6 +6,7 @@ Example: OP_CONSTANT is used to load a String constant
         ```
         == code ==
         0000    1 OP_CONSTANT           0   # "xyz"
-        0002    | OP_RETURN       
-        2 opcodes (3 bytes), 1 constants
+        0002    | OP_POP
+        0003    | OP_RETURN         
+        3 opcodes (4 bytes), 1 constants
         ```

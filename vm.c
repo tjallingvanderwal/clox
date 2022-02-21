@@ -158,6 +158,10 @@ static InterpretResult run(){
                 push(BOOL_VAL(false));
                 break;
             }
+            case OP_POP: {
+                pop();
+                break;
+            }
             case OP_EQUAL: {
                 Value b = pop();
                 Value a = pop();
@@ -204,16 +208,19 @@ static InterpretResult run(){
                 *top = BOOL_VAL(isFalsey(*top));
                 break;
             }
-            case OP_RETURN: {
+            case OP_PRINT: {
                 if (cloxRun.printResultVerbose){
-                    printf("\n== result ==\n");
+                    printf("\n== output ==\n");
                     printValue(pop());
                     printf("\n");
                 }
-                else if (cloxRun.printResult){                   
+                else {                   
                     printValue(pop());
                     printf("\n");
                 }  
+                break;
+            }
+            case OP_RETURN: {
                 return INTERPRET_OK;
             }
         }

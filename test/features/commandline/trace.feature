@@ -1,7 +1,7 @@
 Feature: Command Line | --trace
 
 Example: --trace shows every step of execution
-    When running clox with "--eval '1 + 2' --trace"
+    When running clox with "--eval 'print 1 + 2;' --trace"
     Then clox prints to stdout:
     ```
     == execution ==
@@ -12,10 +12,12 @@ Example: --trace shows every step of execution
             stack: [ 1 ][ 2 ]
     0004    | OP_ADD          
             stack: [ 3 ]
-    0005    | OP_RETURN       
+    0005    | OP_PRINT        
 
-    == result ==
+    == output ==
     3
+            stack: <empty>
+    0006    | OP_RETURN
     ```
 
 Example: When combined with --no-run

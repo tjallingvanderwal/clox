@@ -5,9 +5,9 @@ When('running clox with {string}') do |commandline|
     @stdout, @stderr, @status = Open3.capture3("#{clox} #{commandline}")
 end
 
-When('running a clox file with options {string}:') do |commandline, doc_string|
+def run_file(commandline, lox_code)
     file = Tempfile.open(['test', '.lox'])
-    file.write(doc_string)
+    file.write(lox_code)
     file.close
     
     clox = ENV['CLOX_EXECUTABLE']
@@ -16,21 +16,29 @@ When('running a clox file with options {string}:') do |commandline, doc_string|
     file.unlink 
 end
 
+When('running a clox file:') do |lox_code|
+    run_file('', lox_code)
+end
+
+When('running a clox file with options {string}:') do |commandline, lox_code|
+    run_file(commandline, lox_code)
+end
+
 When('evaluating {string}') do |expression|
     clox = ENV['CLOX_EXECUTABLE']
     raise "Use single quotes" if expression.include?('"')
-    @stdout, @stderr, @status = Open3.capture3("#{clox} --eval \"#{expression}\"")
+    @stdout, @stderr, @status = Open3.capture3("#{clox} --eval \"print #{expression};\"")
 end
 
 When('evaluating {string} with tracing') do |expression|
     clox = ENV['CLOX_EXECUTABLE']
     raise "Use single quotes" if expression.include?('"')
-    @stdout, @stderr, @status = Open3.capture3("#{clox} --eval \"#{expression}\" --trace")
+    @stdout, @stderr, @status = Open3.capture3("#{clox} --eval \"print #{expression};\" --trace")
 end
 
 When('compiling {string}') do |expression|
     clox = ENV['CLOX_EXECUTABLE']
     raise "Use only single quotes" if expression.include?('"')
-    @stdout, @stderr, @status = Open3.capture3("#{clox} --bytecode --eval \"#{expression}\"")
+    @stdout, @stderr, @status = Open3.capture3("#{clox} --bytecode --eval \"#{expression};\"")
 end
 

@@ -1,7 +1,7 @@
 Feature: Command Line | --eval
 
 Example: --eval evaluates the given expression
-    When running clox with "--eval '1 + 2'"
+    When running clox with "--eval 'print 1 + 2;'"
     Then clox prints to stdout:
     ```
     3
@@ -34,7 +34,7 @@ Example: When the expression contains a compile error
     ```
 
 Example: When the expression contains a runtime error
-    When running clox with "--eval '-true'"
+    When running clox with "--eval 'print -true;'"
     Then clox fails with:
     ```
     Operand must be a number.

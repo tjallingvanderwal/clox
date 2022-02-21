@@ -3,7 +3,7 @@ Feature: Strings | Interning
 Example: Two identical literals point to the same ObjString object
     When running a clox file with options "--memory":
     ```
-    "a" + "a"
+    "a" + "a";
     ```
     # Note how there is only 1 String "a" on the heap,
     # even though there are two literals in the source.
@@ -21,16 +21,16 @@ Example: Two identical literals point to the same ObjString object
     0004    | OP_ADD          
             stack: [ "aa" ]
             heap : [ <String "aa"> ][ <String "a"> ]
-    0005    | OP_RETURN       
-
-    == result ==
-    "aa"
+    0005    | OP_POP
+            stack: <empty> 
+            heap : [ <String "aa"> ][ <String "a"> ]
+    0006    | OP_RETURN       
     ```
 
 Example: The result of a concatenation is mapped to be the same ObjString as a literal
     When running a clox file with options "--memory":
     ```
-    "a" + "a" == "aa"
+    "a" + "a" == "aa";
     ```
     # Note how there is only 1 String "aa" on the heap.
     # The concatenation (OP_ADD) does not create a new object
@@ -54,8 +54,8 @@ Example: The result of a concatenation is mapped to be the same ObjString as a l
     0007    | OP_EQUAL        
             stack: [ true ]
             heap : [ <String "aa"> ][ <String "a"> ]
-    0008    | OP_RETURN       
-
-    == result ==
-    true
+    0008    | OP_POP
+            stack: <empty>
+            heap : [ <String "aa"> ][ <String "a"> ]
+    0009    | OP_RETURN       
     ```
