@@ -29,8 +29,8 @@ struct ObjString {
     uint32_t hash;
 };
 
-ObjString* copyString(const char* chars, int length);
-ObjString* takeString(char* chars, int length);
+Value copyString(const char* chars, int length);
+Value takeString(char* chars, int length);
 
 void fprintObject(FILE* stream, Value value);
 void printObject(Value value);
