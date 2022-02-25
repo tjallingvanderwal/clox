@@ -107,6 +107,22 @@ Example: Using a local that has gone out of scope
     [line 4] in script
     ```
 
+Example: Reading a local variable in its own initializer
+    When running a clox file:
+    ```
+    {
+        var a = "outer";
+        {
+            var a = a;
+        }
+    }
+    ```
+    Then clox fails with:
+    ```
+    [line 4] Error at 'a': Can't read local variable in its own initializer.
+    ```
+
+
 Example: 'Defining too many locals'
     When running a clox file:
     ```
