@@ -1,4 +1,4 @@
-Feature: Variables | Globals
+Feature: Variables | Locals
 
 Example: Defining a local variable with initializing expression
     When running a clox file:

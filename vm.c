@@ -165,6 +165,11 @@ static InterpretResult run(){
                 pop();
                 break;
             }
+            case OP_POPN: {
+                uint8_t slot_count = READ_BYTE();
+                vm.stackTop -= slot_count;
+                break;
+            }
             case OP_GET_LOCAL: {
                 uint8_t slot = READ_BYTE();
                 push(vm.stack[slot]);

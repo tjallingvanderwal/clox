@@ -38,6 +38,11 @@ end
 When('compiling {string}') do |expression|
     clox = ENV['CLOX_EXECUTABLE']
     raise "Use only single quotes" if expression.include?('"')
-    @stdout, @stderr, @status = Open3.capture3("#{clox} --bytecode --eval \"#{expression};\"")
+    command = "#{clox} --bytecode --eval \"#{expression};\""
+    @stdout, @stderr, @status = Open3.capture3(command)
+end
+
+When('compiling:') do |lox_code|
+    run_file("--bytecode", lox_code)
 end
 

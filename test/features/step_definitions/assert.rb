@@ -25,6 +25,6 @@ Then('clox prints to stdout:') do |doc_string|
     expect(@stdout.squish).to eql(doc_string.squish)
 end
 
-Then('the bytecode looks like:') do |doc_string|
-    expect(@stdout.squish).to eql(doc_string.squish)
+Then('the bytecode looks like:') do |expected_bytecode|
+    expect(@stdout.squish).to eql(expected_bytecode.squish)
 end

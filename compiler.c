@@ -163,10 +163,22 @@ static void beginScope(){
 static void endScope(){
     current->scopeDepth--;
 
-    // Pop locals off the stack to remove all variables of the current scope.
+    // Count how many locals there are in this scope.
+    int scopeCount = 0;
     while (current->localCount > 0 && current->locals[current->localCount - 1].depth > current->scopeDepth){
-        emitByte(OP_POP);
+        scopeCount++;
         current->localCount--;
+    }
+
+    // Pop those locals off the stack to remove all variables of the current scope.
+    if (scopeCount == 0){
+        // nothing to do
+    }
+    else if (scopeCount == 1){
+        emitByte(OP_POP);
+    }
+    else {
+        emitBytes(OP_POPN, (uint8_t)scopeCount);
     }
 }
 
