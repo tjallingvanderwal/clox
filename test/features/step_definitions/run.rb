@@ -12,7 +12,6 @@ def run_file(commandline, lox_code)
     
     clox = ENV['CLOX_EXECUTABLE']
     @stdout, @stderr, @status = Open3.capture3("#{clox} --file #{file.path} #{commandline}")
-    
     file.unlink 
 end
 

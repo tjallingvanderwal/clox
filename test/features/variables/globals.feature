@@ -48,6 +48,7 @@ Example: Making breakfast
     "beignets with cafe au lait"
     ```
 
+# Each global requires 2 constants (name + value), so only 128 globals are needed to fill up the chunk.
 Example: 'Defining too many globals'
     When running a clox file:
     ```
