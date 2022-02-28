@@ -618,6 +618,109 @@ static void forStatement(){
     endScope();
 }
 
+static void switchStatement(){
+    consume(TOKEN_LEFT_PAREN, "Expect '(' after 'switch'.");
+    expression();
+    consume(TOKEN_RIGHT_PAREN, "Expect ')' after condition.");
+    consume(TOKEN_LEFT_BRACE, "Expect '{' to start list of cases.");
+
+    int caseCount = 0;
+
+    // Jump to the evaluation of the first case.
+    int nextCaseJump = emitJump(OP_JUMP);
+    
+    // Instead of keeping a list of all OP_JUMPs that need patching,
+    // we jump back from the end of each CASE to a jump that takes us
+    // to the end of the switch.
+    int exitSwitch = currentChunk()->count;
+    int exitSwitchJump = emitJump(OP_JUMP);
+
+    // Process 'case' keywords one by one.
+    bool cleanupJumpIfFalse = false;
+    while (match(TOKEN_CASE)){
+        caseCount++;
+        // This point in the instruction stream is where
+        // the previous case should jump to if that case
+        // was false.
+        patchJump(nextCaseJump);
+        // Cleanup the value left behind by 
+        // the OP_JUMP_IF_FALSE executed by
+        // the previous 'case'.
+        if (cleanupJumpIfFalse){
+            emitByte(OP_POP);
+        }
+        // Duplicate the value of the condition,
+        // so that we still have a copy after OP_EQUAL
+        emitByte(OP_DUP);
+        // Evaluate condition for this case.
+        expression();
+        consume(TOKEN_COLON, "Expect ':' after 'case' expression.");
+        // Compare condition with case.
+        emitByte(OP_EQUAL);
+        // Jump to the next case when this 
+        // case does not match the condition.
+        nextCaseJump = emitJump(OP_JUMP_IF_FALSE);
+        // Cleanup value created by OP_EQUAL,
+        // and left behind by OP_JUMP_IF_FALSE
+        // False-branch:
+        cleanupJumpIfFalse = true;
+        // True-branch: 
+        emitByte(OP_POP);
+        // Body of the case to be executed 
+        // when case matches condition.
+        statement();
+        // Jump back to the OP_JUMP 
+        // that exits the whole switch.
+        emitLoop(exitSwitch); 
+    }
+
+    // Process optional 'default' case.
+    if (match(TOKEN_DEFAULT)){
+        caseCount++;
+        consume(TOKEN_COLON, "Expect ':' after 'default'");
+        // This point in the instruction stream is where
+        // the previous case should jump to if that case
+        // was false.
+        patchJump(nextCaseJump);
+        // Cleanup the value left behind by 
+        // the OP_JUMP_IF_FALSE executed by
+        // the last 'case'.
+        if (cleanupJumpIfFalse){
+            emitByte(OP_POP);
+        }
+        // Body of the case to be executed. 
+        statement();
+        // Default case is the last, so it can fall through 
+        // to the end of the switch without extra jumps.
+    }
+    else {
+        // The last 'case' needs to jump somewhere
+        // when there is no 'default' and none of the
+        // cases match.
+        patchJump(nextCaseJump);
+        // Cleanup the value left behind by 
+        // the OP_JUMP_IF_FALSE executed by
+        // the last 'case'.
+        if (cleanupJumpIfFalse){
+            emitByte(OP_POP);
+        }
+    }
+
+    // We've compiled the entire switch. Now we know where the
+    // end of the switch is, and we can patch the jump that we
+    // inserted at the top.
+    patchJump(exitSwitchJump);
+    
+    // Discard the result of the condition.
+    emitByte(OP_POP);
+    
+    consume(TOKEN_RIGHT_BRACE, "Expect '}' to end list of cases.");
+
+    if (caseCount == 0){
+        error("No 'case'es nor 'default' in 'switch'.");
+    }
+}
+
 static void printStatement(){
     expression();
     consume(TOKEN_SEMICOLON, "Expect ';' after value.");
@@ -630,8 +733,10 @@ static void synchronize(){
     while (parser.current.type != TOKEN_EOF){
         if (parser.previous.type == TOKEN_SEMICOLON) return;
         switch (parser.current.type){
+            case TOKEN_CASE:   
             case TOKEN_CLASS:
             case TOKEN_CONST:
+            case TOKEN_DEFAULT:
             case TOKEN_FUN:
             case TOKEN_VAR:
             case TOKEN_FOR:
@@ -639,6 +744,7 @@ static void synchronize(){
             case TOKEN_WHILE:
             case TOKEN_PRINT:
             case TOKEN_RETURN:
+            case TOKEN_SWITCH:
                 return;
 
             default:
@@ -673,6 +779,9 @@ static void statement(){
     }
     else if (match(TOKEN_WHILE)){
         whileStatement();
+    }
+    else if (match(TOKEN_SWITCH)){
+        switchStatement();
     }
     else if (match(TOKEN_LEFT_BRACE)){
         beginScope();

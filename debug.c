@@ -47,7 +47,7 @@ static int longConstantInstruction(const char* name, Chunk* chunk, int offset){
 static int jumpInstruction(const char* name, int sign, Chunk* chunk, int offset){
     uint16_t jump = (uint16_t)(chunk->code[offset+1] << 8);
     jump |= chunk->code[offset+2];
-    printf("%-16s %6d -> %d\n", name, offset, (offset+3 + sign * jump));
+    printf("%-16s %04d -> %04d\n", name, offset, (offset+3 + sign * jump));
     return offset + 3;
 }
 
@@ -68,6 +68,8 @@ int disassembleInstruction(Chunk* chunk, int offset){
             return constantInstruction("OP_CONSTANT", chunk, offset);
         case OP_CONSTANT_LONG:
             return longConstantInstruction("OP_CONSTANT_LONG", chunk, offset);            
+        case OP_DUP:
+            return simpleInstruction("OP_DUP", offset);
         case OP_NIL:
             return simpleInstruction("OP_NIL", offset);
         case OP_FALSE:
