@@ -511,12 +511,17 @@ static void ifStatement(){
     int thenJump = emitJump(OP_JUMP_IF_FALSE);
     statement();
 
-    int elseJump = emitJump(OP_JUMP);
+    if (check(TOKEN_ELSE)){
+        int elseJump = emitJump(OP_JUMP);
+        patchJump(thenJump);
+        consume(TOKEN_ELSE, "Already seen else.");
+        statement();
+        patchJump(elseJump);
+    }
+    else {
+        patchJump(thenJump);
+    }
 
-    patchJump(thenJump);
-
-    if (match(TOKEN_ELSE)) statement();
-    patchJump(elseJump);
     emitByte(OP_POP);
 }
 
