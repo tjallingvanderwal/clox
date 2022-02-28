@@ -36,7 +36,7 @@ Example: Redefining a local variable in the same scope
     ```
     Then clox fails with:
     ```
-    [line 3] Error at 'local': Already a variable with this name in this scope.
+    [line 3] Error at 'local': Already a variable or constant with this name in this scope.
     ```
 
 Example: Reassigning a local variable
@@ -119,7 +119,7 @@ Example: Reading a local variable in its own initializer
     ```
     Then clox fails with:
     ```
-    [line 4] Error at 'a': Can't read local variable in its own initializer.
+    [line 4] Error at 'a': Can't read local variable or constant in its own initializer.
     ```
 
 
@@ -157,8 +157,8 @@ Example: 'Defining too many locals'
     ```
     Then clox fails with:
     ```
-    [line 27] Error at 'z6': Too many local variables in function.
-    [line 27] Error at 'z7': Too many local variables in function.
-    [line 27] Error at 'z8': Too many local variables in function.
-    [line 27] Error at 'z9': Too many local variables in function.
+    [line 27] Error at 'z6': Too many local variables or constants in function.
+    [line 27] Error at 'z7': Too many local variables or constants in function.
+    [line 27] Error at 'z8': Too many local variables or constants in function.
+    [line 27] Error at 'z9': Too many local variables or constants in function.
     ```

@@ -40,6 +40,8 @@ typedef struct {
 typedef struct {
     Token name;
     int depth;
+    int offset;
+    bool constant;
 } Local;
 
 typedef struct {
@@ -188,7 +190,7 @@ static void declaration();
 static ParseRule* getRule(TokenType type);
 static void parsePrecedence(Precedence precedence);
 static uint8_t identifierConstant(Token* name);
-static int resolveLocal(Compiler* compiler, Token* name);
+static Local* resolveLocal(Compiler* compiler, Token* name);
 
 static void binary(bool canAssign){
     TokenType operatorType = parser.previous.type;
@@ -237,25 +239,32 @@ static void string(bool canAssign){
 
 static void namedVariable(Token name, bool canAssign){
     uint8_t getOp, setOp;
-    int arg = resolveLocal(current, &name);
-    if (arg != -1){
+    
+    // Try if we can find a local with this name.    
+    Local* local = resolveLocal(current, &name);
+    int operand;
+    if (local != NULL){
         // found -> local
         getOp = OP_GET_LOCAL;
         setOp = OP_SET_LOCAL;
+        operand = local->offset;
     }
     else {
         // not found -> assume global
-        arg = identifierConstant(&name);
         getOp = OP_GET_GLOBAL;
         setOp = OP_SET_GLOBAL;
+        operand = identifierConstant(&name);
     }
 
     if (canAssign && match(TOKEN_EQUAL)){
+        if (local != NULL && local->constant){
+            error("Constant cannot be assigned to.");
+        }
         expression();
-        emitBytes(setOp, (uint8_t)arg);
+        emitBytes(setOp, (uint8_t)operand);
     }
     else {
-        emitBytes(getOp, (uint8_t)arg);
+        emitBytes(getOp, (uint8_t)operand);
     }
 }
 
@@ -282,6 +291,7 @@ ParseRule rules[] = {
     [TOKEN_RIGHT_PAREN]   = { NULL,     NULL,   PREC_NONE     },
     [TOKEN_LEFT_BRACE]    = { NULL,     NULL,   PREC_NONE     },
     [TOKEN_RIGHT_BRACE]   = { NULL,     NULL,   PREC_NONE     },
+    [TOKEN_CONST]         = { NULL,     NULL,   PREC_NONE     },
     [TOKEN_COMMA]         = { NULL,     NULL,   PREC_NONE     },
     [TOKEN_DOT]           = { NULL,     NULL,   PREC_NONE     },
     [TOKEN_MINUS]         = { unary,    binary, PREC_TERM     },
@@ -351,31 +361,34 @@ static bool identifiersEqual(Token* a, Token* b){
     return memcmp(a->start,  b->start,  a->length) == 0;
 }
 
-static int resolveLocal(Compiler* compiler, Token* name){
+static Local* resolveLocal(Compiler* compiler, Token* name){
     for (int i = compiler->localCount - 1; i >= 0; i--){
         Local* local = &compiler->locals[i];
         if (identifiersEqual(name, &local->name)){
             if (local->depth == -1){
-                error("Can't read local variable in its own initializer.");
+                error("Can't read local variable or constant in its own initializer.");
             }    
-            return i;
+            return local;
         }
     }
-    return -1;
+    return NULL;
 }
 
-static void addLocal(Token name){
+static void addLocal(Token name, bool constant){
     if (current->localCount == UINT8_COUNT){
-        error("Too many local variables in function.");
+        error("Too many local variables or constants in function.");
         return;
     }
 
-    Local* local = &current->locals[current->localCount++];
+    Local* local = &current->locals[current->localCount];
+    local->offset = current->localCount;
     local->name = name;
     local->depth = -1;
+    local->constant = constant;
+    current->localCount++;
 }
 
-static void declareVariable(){
+static void declareVariable(bool constant){
     if (current->scopeDepth == 0) return;
 
     Token* name = &parser.previous;
@@ -386,17 +399,17 @@ static void declareVariable(){
             break;
         }
         if (identifiersEqual(name, &local->name)){
-            error("Already a variable with this name in this scope.");
+            error("Already a variable or constant with this name in this scope.");
         }
     }
 
-    addLocal(*name);
+    addLocal(*name, constant);
 }
 
-static uint8_t parseVariable(const char* errorMessage){
+static uint8_t parseVariable(const char* errorMessage, bool constant){
     consume(TOKEN_IDENTIFIER, errorMessage);
 
-    declareVariable();
+    declareVariable(constant);
     if (current->scopeDepth > 0) return 0;
 
     return identifierConstant(&parser.previous);
@@ -406,12 +419,22 @@ static void markInitialized(){
     current->locals[current->localCount - 1].depth = current->scopeDepth;
 }
 
-static void defineVariable(uint8_t global){
+static void defineVariable(uint8_t global, bool constant){
+    // Local
     if (current->scopeDepth > 0) {
         markInitialized();
         return;
     }
-    emitBytes(OP_DEFINE_GLOBAL, global);
+    // Global
+    else {
+        if (constant){
+            error("Constants not allowed at global level.");
+            // Semantic error, let's continue to generate bytecode
+            // as close a possible to what we would generate otherwise.
+            // return;  
+        }
+        emitBytes(OP_DEFINE_GLOBAL, global);
+    }
 }
 
 static ParseRule* getRule(TokenType type){
@@ -430,7 +453,7 @@ static void block(){
 }
 
 static void varDeclaration(){
-    uint8_t global = parseVariable("Expect variable name.");
+    uint8_t global = parseVariable("Expect variable name.", false);
 
     if (match(TOKEN_EQUAL)){
         expression();
@@ -441,12 +464,23 @@ static void varDeclaration(){
 
     consume(TOKEN_SEMICOLON, "Expect ';' after variable declaration.");
 
-    defineVariable(global);
+    defineVariable(global, false);
 }
+
+static void constDeclaration(){
+    uint8_t global = parseVariable("Expect constant name.", true);
+
+    consume(TOKEN_EQUAL, "Expect expresion to initialize constant.");
+    expression();
+    consume(TOKEN_SEMICOLON, "Expect ';' after constant declaration.");
+
+    defineVariable(global, true);
+}
+
 
 static void expressionStatement(){
     expression();
-    consume(TOKEN_SEMICOLON, "Exprect ';' after expression.");
+    consume(TOKEN_SEMICOLON, "Expect ';' after expression.");
     emitByte(OP_POP);
 }
 
@@ -463,6 +497,7 @@ static void synchronize(){
         if (parser.previous.type == TOKEN_SEMICOLON) return;
         switch (parser.current.type){
             case TOKEN_CLASS:
+            case TOKEN_CONST:
             case TOKEN_FUN:
             case TOKEN_VAR:
             case TOKEN_FOR:
@@ -483,6 +518,9 @@ static void synchronize(){
 static void declaration(){
     if (match(TOKEN_VAR)){
         varDeclaration();
+    }
+    else if (match(TOKEN_CONST)){
+        constDeclaration();        
     } else {
         statement();
     }
