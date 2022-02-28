@@ -1,5 +1,6 @@
 source "https://rubygems.org"
 gem 'dotenv', require: 'dotenv/load'
 gem 'cucumber'
+gem 'rspec-core'
 gem 'rspec-expectations'
 gem 'activesupport'
