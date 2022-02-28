@@ -10,7 +10,7 @@ Example: 'and' evaluates its right operand when the left is true
     stack: <empty>
     0000 1 OP_TRUE
     stack: [ true ]
-    0001 | OP_JUMP_IF_FALSE 1 -> 6
+    0001 | OP_JUMP_IF_FALSE 0001 -> 0006
     stack: [ true ]
     0004 | OP_POP
     stack: <empty>
@@ -31,7 +31,7 @@ Example: 'and' does not evaluate its right operand when the left is false
     stack: <empty>
     0000 1 OP_FALSE
     stack: [ false ]
-    0001 | OP_JUMP_IF_FALSE 1 -> 6
+    0001 | OP_JUMP_IF_FALSE 0001 -> 0006
     stack: [ false ]
     0006 | OP_PRINT
     == output ==
@@ -50,7 +50,7 @@ Example: 'or' evaluates its right operand when the left is false
     stack: <empty>
     0000 1 OP_FALSE
     stack: [ false ]
-    0001 | OP_JUMP_IF_FALSE 1 -> 7
+    0001 | OP_JUMP_IF_FALSE 0001 -> 0007
     stack: [ false ]
     0007 | OP_POP
     stack: <empty>
@@ -71,9 +71,9 @@ Example: 'or' does not evaluate its right operand when the left is true
     stack: <empty>
     0000 1 OP_TRUE
     stack: [ true ]
-    0001 | OP_JUMP_IF_FALSE 1 -> 7
+    0001 | OP_JUMP_IF_FALSE  0001 -> 0007
     stack: [ true ]
-    0004 | OP_JUMP 4 -> 9
+    0004 | OP_JUMP           0004 -> 0009
     stack: [ true ]
     0009 | OP_PRINT
     == output ==

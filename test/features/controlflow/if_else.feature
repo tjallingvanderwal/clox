@@ -45,10 +45,10 @@ Example: The value of the condition is popped from the stack when the branches c
     ```
     == code ==
     0000    1 OP_FALSE        
-    0001    | OP_JUMP_IF_FALSE      1 -> 10
+    0001    | OP_JUMP_IF_FALSE      0001 -> 0010
     0004    2 OP_CONSTANT           0   # 1
     0006    | OP_PRINT        
-    0007    3 OP_JUMP               7 -> 13
+    0007    3 OP_JUMP               0007 -> 0013
     0010    5 OP_CONSTANT           1   # 2
     0012    | OP_PRINT        
     0013    6 OP_POP          
@@ -67,7 +67,7 @@ Example: No code is generated when there is no else-branch
     ```
     == code ==
     0000    1 OP_FALSE        
-    0001    | OP_JUMP_IF_FALSE      1 -> 7
+    0001    | OP_JUMP_IF_FALSE      0001 -> 0007
     0004    2 OP_CONSTANT           0   # 1
     0006    | OP_PRINT        
     0007    3 OP_POP          
