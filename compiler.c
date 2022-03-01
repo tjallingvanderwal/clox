@@ -316,17 +316,23 @@ static void unary(bool canAssign){
 }
 
 static void and_(bool canAssign){
+    // Duplicate LHS operand, so that it can become the result when it is falsey.
+    emitByte(OP_DUP);
     int endJump = emitJump(OP_JUMP_IF_FALSE);
-    emitByte(OP_POP); // left-hand operand is truthy; right-hand operand is result
+    // LHS operand is truthy; right-hand operand will be result.
+    emitByte(OP_POP);
     parsePrecedence(PREC_AND);
     patchJump(endJump);
 }
 
 static void or_(bool canAssign){
+    // Duplicate LHS operand, so that it can become the result when it is truthey.
+    emitByte(OP_DUP);
     int elseJump = emitJump(OP_JUMP_IF_FALSE);
     int endJump = emitJump(OP_JUMP);
     patchJump(elseJump);
-    emitByte(OP_POP); // left-hand operand is falsey; right-hand operand is result
+    // LHS operand is falsey; right-hand operand is result
+    emitByte(OP_POP);
     parsePrecedence(PREC_OR);
     patchJump(endJump);
 }
