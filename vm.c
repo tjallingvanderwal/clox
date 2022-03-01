@@ -274,7 +274,7 @@ static InterpretResult run(){
             }
             case OP_JUMP_IF_FALSE: {
                 uint16_t offset = READ_SHORT();
-                if (isFalsey(peek(0))) vm.ip += offset;
+                if (isFalsey(pop())) vm.ip += offset;
                 break;
             }
             case OP_LOOP: {
