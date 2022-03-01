@@ -553,8 +553,6 @@ static void ifStatement(){
     else {
         patchJump(thenJump);
     }
-
-    emitByte(OP_POP);
 }
 
 static void whileStatement(){
@@ -564,12 +562,10 @@ static void whileStatement(){
     consume(TOKEN_RIGHT_PAREN, "Expect ')' after condition.");
 
     int exitJump = emitJump(OP_JUMP_IF_FALSE);
-    emitByte(OP_POP);
     statement();
     emitLoop(loopStart);
 
     patchJump(exitJump);
-    emitByte(OP_POP);
 }
 
 static void forStatement(){
@@ -599,7 +595,6 @@ static void forStatement(){
 
         // Jump out of the loop if the condition is false.
         exitJump = emitJump(OP_JUMP_IF_FALSE);
-        emitByte(OP_POP); // Cleanup condition result.
     }
 
     if (!match(TOKEN_RIGHT_PAREN)){
@@ -619,7 +614,6 @@ static void forStatement(){
 
     if (exitJump != -1){
         patchJump(exitJump);
-        emitByte(OP_POP); // Cleanup condition result.
     }
     endScope();
 }
@@ -642,19 +636,12 @@ static void switchStatement(){
     int exitSwitchJump = emitJump(OP_JUMP);
 
     // Process 'case' keywords one by one.
-    bool cleanupJumpIfFalse = false;
     while (match(TOKEN_CASE)){
         caseCount++;
         // This point in the instruction stream is where
         // the previous case should jump to if that case
         // was false.
         patchJump(nextCaseJump);
-        // Cleanup the value left behind by 
-        // the OP_JUMP_IF_FALSE executed by
-        // the previous 'case'.
-        if (cleanupJumpIfFalse){
-            emitByte(OP_POP);
-        }
         // Duplicate the value of the condition,
         // so that we still have a copy after OP_EQUAL
         emitByte(OP_DUP);
@@ -666,12 +653,6 @@ static void switchStatement(){
         // Jump to the next case when this 
         // case does not match the condition.
         nextCaseJump = emitJump(OP_JUMP_IF_FALSE);
-        // Cleanup value created by OP_EQUAL,
-        // and left behind by OP_JUMP_IF_FALSE
-        // False-branch:
-        cleanupJumpIfFalse = true;
-        // True-branch: 
-        emitByte(OP_POP);
         // Body of the case to be executed 
         // when case matches condition.
         statement();
@@ -688,12 +669,6 @@ static void switchStatement(){
         // the previous case should jump to if that case
         // was false.
         patchJump(nextCaseJump);
-        // Cleanup the value left behind by 
-        // the OP_JUMP_IF_FALSE executed by
-        // the last 'case'.
-        if (cleanupJumpIfFalse){
-            emitByte(OP_POP);
-        }
         // Body of the case to be executed. 
         statement();
         // Default case is the last, so it can fall through 
@@ -704,12 +679,6 @@ static void switchStatement(){
         // when there is no 'default' and none of the
         // cases match.
         patchJump(nextCaseJump);
-        // Cleanup the value left behind by 
-        // the OP_JUMP_IF_FALSE executed by
-        // the last 'case'.
-        if (cleanupJumpIfFalse){
-            emitByte(OP_POP);
-        }
     }
 
     // We've compiled the entire switch. Now we know where the

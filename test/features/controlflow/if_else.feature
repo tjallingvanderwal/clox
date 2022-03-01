@@ -30,47 +30,35 @@ Example: The else-branch is executed when the condition is false
     2
     ```
 
-Example: The value of the condition is popped from the stack when the branches converge
+Example: Code is generated for both branches when both are empty
     When compiling: 
     ```
-    if (false){
-        print 1;
+    if (false){    
     }
     else {
-        print 2;
     }
     ```
-    # 0013 -> value of the condition is popped
     Then the bytecode looks like:
     ```
     == code ==
     0000    1 OP_FALSE        
-    0001    | OP_JUMP_IF_FALSE      0001 -> 0010
-    0004    2 OP_CONSTANT           0   # 1
-    0006    | OP_PRINT        
-    0007    3 OP_JUMP               0007 -> 0013
-    0010    5 OP_CONSTANT           1   # 2
-    0012    | OP_PRINT        
-    0013    6 OP_POP          
-    0014    | OP_RETURN       
-    9 opcodes (15 bytes), 2 constants
+    0001    | OP_JUMP_IF_FALSE 0001 -> 0007
+    0004    2 OP_JUMP          0004 -> 0007
+    0007    4 OP_RETURN       
+    4 opcodes (8 bytes), 0 constants
     ```
 
-Example: No code is generated when there is no else-branch
+Example: No code is generated for the else-branch  when there is no else-branch
     When compiling: 
     ```
     if (false){
-        print 1;
     }
     ```
     Then the bytecode looks like:
     ```
     == code ==
     0000    1 OP_FALSE        
-    0001    | OP_JUMP_IF_FALSE      0001 -> 0007
-    0004    2 OP_CONSTANT           0   # 1
-    0006    | OP_PRINT        
-    0007    3 OP_POP          
-    0008    | OP_RETURN       
-    6 opcodes (9 bytes), 1 constants
+    0001    | OP_JUMP_IF_FALSE      0001 -> 0004
+    0004    2 OP_RETURN       
+    3 opcodes (5 bytes), 0 constants
     ```
