@@ -267,6 +267,11 @@ static InterpretResult run(){
                 }  
                 break;
             }
+            case OP_SKIP: {
+                // 1 byte opcode + 2 bytes operand
+                vm.ip += 3;
+                break;
+            }
             case OP_JUMP: {
                 uint16_t offset = READ_SHORT();
                 vm.ip += offset;

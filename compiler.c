@@ -45,8 +45,17 @@ typedef struct {
     bool anonymous;
 } Local;
 
+typedef struct Loop {
+    struct Loop* enclosing;
+    int breakTarget;
+    int breakLocalCount;
+    int continueTarget;
+    int continueLocalCount;
+} Loop;
+
 typedef struct {
     Local locals[UINT8_COUNT];
+    Loop* currentLoop;
     int localCount;
     int scopeDepth;
 } Compiler;
@@ -128,6 +137,18 @@ static void emitBytes(uint8_t byte1, uint8_t byte2){
     emitByte(byte2);
 }
 
+static void emitPop(int count){
+    if (count == 0){
+        // nothing to do
+    }
+    else if (count == 1){
+        emitByte(OP_POP);
+    }
+    else {
+        emitBytes(OP_POPN, (uint8_t)count);
+    }
+}
+
 static int emitJump(uint8_t instruction){
     emitByte(instruction);
     emitByte(0xFF);
@@ -168,6 +189,7 @@ static void patchJump(int offset){
 static void initCompiler(Compiler* compiler){
     compiler->localCount = 0;
     compiler->scopeDepth = 0;
+    compiler->currentLoop = NULL;
     current = compiler;
 }
 
@@ -203,15 +225,7 @@ static void endScope(){
     }
 
     // Pop those locals off the stack to remove all variables of the current scope.
-    if (scopeCount == 0){
-        // nothing to do
-    }
-    else if (scopeCount == 1){
-        emitByte(OP_POP);
-    }
-    else {
-        emitBytes(OP_POPN, (uint8_t)scopeCount);
-    }
+    emitPop(scopeCount);
 }
 
 static void expression();
@@ -574,8 +588,37 @@ static void ifStatement(){
     }
 }
 
+// Loops are nested and we compile them recursively.
+// This allows us to store them as a linked list
+// threaded through the C stack.
+static void startLoop(Loop* loop){
+    loop->enclosing = current->currentLoop;
+    current->currentLoop = loop;
+}
+
+static void endLoop(){
+    current->currentLoop = current->currentLoop->enclosing;
+}
+
 static void whileStatement(){
+    // Bookkeeping for 'break' and 'continue' statements.
+    Loop whileLoop;
+    startLoop(&whileLoop);
+    
+    // Insert a jump that unconditionally jumps out of the loop.
+    emitByte(OP_SKIP);
+    whileLoop.breakTarget = currentChunk()->count;
+    whileLoop.breakLocalCount = current->localCount;
+    int breakJump = emitJump(OP_JUMP);
+
+    // This is were we jump to at the end of the loop 
+    // (or when continue statement is used).
     int loopStart = currentChunk()->count;
+
+    // Configure where 'continue' should jump to.
+    whileLoop.continueTarget = loopStart;
+    whileLoop.continueLocalCount = current->localCount;
+
     consume(TOKEN_LEFT_PAREN, "Expect '(' after 'while'.");
     expression();
     consume(TOKEN_RIGHT_PAREN, "Expect ')' after condition.");
@@ -584,15 +627,28 @@ static void whileStatement(){
     statement();
     emitLoop(loopStart);
 
-    patchJump(exitJump);
+    patchJump(exitJump);   // condition has become false
+    patchJump(breakJump);  // break statement used
 }
 
 static void forStatement(){
-    beginScope();
     consume(TOKEN_LEFT_PAREN, "Expect '(' after 'for'.");
+
+    // Bookkeeping for 'break' and 'continue' statements.
+    Loop forLoop;
+    startLoop(&forLoop);
+    
+    // Insert a jump that unconditionally jumps out of the loop.
+    emitByte(OP_SKIP);
+    forLoop.breakLocalCount = current->localCount;
+    forLoop.breakTarget = currentChunk()->count;
+    int breakJump = emitJump(OP_JUMP);
+    
+    // A variable declared in the initializer has its own scope.
+    beginScope();
     
     if (match(TOKEN_SEMICOLON)){
-        // no initializer
+        // Empty initializer
     }
     else if (match(TOKEN_VAR)){
         varDeclaration();
@@ -628,13 +684,25 @@ static void forStatement(){
         patchJump(bodyJump);;
     }
 
+    // Configure where 'continue' should jump to.
+    forLoop.continueTarget = loopStart;
+    forLoop.continueLocalCount = current->localCount;
+
+    // Compile the body of the loop, and afterward jump back to the start.
     statement();
     emitLoop(loopStart);
 
-    if (exitJump != -1){
-        patchJump(exitJump);
-    }
+    // Jump taken when condition becomes false.
+    // We need to pop the local created in the initializer from the stack.
+    if (exitJump != -1){ patchJump(exitJump); }
     endScope();
+
+    // Jump taken when 'break' is used.
+    // The local created in the initializer and all other locals
+    // have already been popped by the 'break' statement.
+    patchJump(breakJump);
+
+    endLoop();
 }
 
 static void switchStatement(){
@@ -718,6 +786,34 @@ static void switchStatement(){
     }
 }
 
+static void breakStatement(){
+    Compiler* compiler = current;
+    Loop* loop = compiler->currentLoop;
+
+    if (loop == NULL){
+        error("No loop to 'break' out of.");
+    }
+    else {
+        emitPop(compiler->localCount - loop->breakLocalCount);
+        emitLoop(loop->breakTarget);
+    }
+    consume(TOKEN_SEMICOLON, "Expect ';' after 'break'.");
+}
+
+static void continueStatement(){
+    Compiler* compiler = current;
+    Loop* loop = compiler->currentLoop;
+
+    if (loop == NULL){
+        error("No loop to 'continue' with.");
+    }
+    else {
+        emitPop(compiler->localCount - loop->continueLocalCount);
+        emitLoop(loop->continueTarget);
+    }
+    consume(TOKEN_SEMICOLON, "Expect ';' after 'continue'.");
+}
+
 static void printStatement(){
     expression();
     consume(TOKEN_SEMICOLON, "Expect ';' after value.");
@@ -730,9 +826,11 @@ static void synchronize(){
     while (parser.current.type != TOKEN_EOF){
         if (parser.previous.type == TOKEN_SEMICOLON) return;
         switch (parser.current.type){
+            case TOKEN_BREAK:
             case TOKEN_CASE:   
             case TOKEN_CLASS:
             case TOKEN_CONST:
+            case TOKEN_CONTINUE:
             case TOKEN_DEFAULT:
             case TOKEN_FUN:
             case TOKEN_VAR:
@@ -779,6 +877,12 @@ static void statement(){
     }
     else if (match(TOKEN_SWITCH)){
         switchStatement();
+    }
+    else if (match(TOKEN_BREAK)){
+        breakStatement();
+    }
+    else if (match(TOKEN_CONTINUE)){
+        continueStatement();
     }
     else if (match(TOKEN_LEFT_BRACE)){
         beginScope();
