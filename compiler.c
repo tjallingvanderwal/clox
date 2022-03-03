@@ -42,6 +42,7 @@ typedef struct {
     int depth;
     int offset;
     bool constant;
+    bool anonymous;
 } Local;
 
 typedef struct {
@@ -415,7 +416,7 @@ static bool identifiersEqual(Token* a, Token* b){
 static Local* resolveLocal(Compiler* compiler, Token* name){
     for (int i = compiler->localCount - 1; i >= 0; i--){
         Local* local = &compiler->locals[i];
-        if (identifiersEqual(name, &local->name)){
+        if (!local->anonymous && identifiersEqual(name, &local->name)){
             if (local->depth == -1){
                 error("Can't read local variable or constant in its own initializer.");
             }    
@@ -436,7 +437,25 @@ static void addLocal(Token name, bool constant){
     local->name = name;
     local->depth = -1;
     local->constant = constant;
+    local->anonymous = false;
     current->localCount++;
+}
+
+// Creates a local without a name, to be used by the compiler for its own purposes.
+static int addAnonymousLocal(){
+    if (current->localCount == UINT8_COUNT){
+        error("Too many local variables or constants in function.");
+        return 0;
+    }
+
+    Local* local = &current->locals[current->localCount];
+    local->offset = current->localCount;
+    // local->name = NULL;
+    local->depth = current->scopeDepth;
+    local->constant = false;
+    local->anonymous = true;
+    current->localCount++;
+    return local->offset;
 }
 
 static void declareVariable(bool constant){
@@ -619,7 +638,10 @@ static void forStatement(){
 }
 
 static void switchStatement(){
+    beginScope();
+
     consume(TOKEN_LEFT_PAREN, "Expect '(' after 'switch'.");
+    int conditionLocal = addAnonymousLocal();
     expression();
     consume(TOKEN_RIGHT_PAREN, "Expect ')' after condition.");
     consume(TOKEN_LEFT_BRACE, "Expect '{' to start list of cases.");
@@ -642,9 +664,8 @@ static void switchStatement(){
         // the previous case should jump to if that case
         // was false.
         patchJump(nextCaseJump);
-        // Duplicate the value of the condition,
-        // so that we still have a copy after OP_EQUAL
-        emitByte(OP_DUP);
+        // Load the value of the condition
+        emitBytes(OP_GET_LOCAL, (uint8_t)conditionLocal);
         // Evaluate condition for this case.
         expression();
         consume(TOKEN_COLON, "Expect ':' after 'case' expression.");
@@ -686,8 +707,9 @@ static void switchStatement(){
     // inserted at the top.
     patchJump(exitSwitchJump);
     
-    // Discard the result of the condition.
-    emitByte(OP_POP);
+    // End the scope. This discards the anonymous local 
+    // that stores the result of the condition.
+    endScope();
     
     consume(TOKEN_RIGHT_BRACE, "Expect '}' to end list of cases.");
 

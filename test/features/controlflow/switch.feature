@@ -61,18 +61,24 @@ Example: Local variables can be used inside cases
         var b = 2;
         switch (a){
             case 1: {
-                var c = 3; // 'c' gets assigned call frame offset that contains copy of condition 
-                var d = 4; // 'd' gets assigned call frame offset that contains '3' 
-                print c;   
+                // The switch condition is kept on the stack.
+                // Verify that it does not interfere with local vars.
+                var c = 3; 
+                var d = 4; 
+                print c;    
                 print d;   
             }
         }
+        // Verify switch condition has been forgotten.
+        var e = 5;
+        print e; 
     }
     ```
     Then clox prints to stdout:
     ```
-    1
     3
+    4
+    5
     ```
 
 Example: Semantic error: Zero 'case'es and no 'default' branch
