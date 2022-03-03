@@ -53,6 +53,28 @@ Example: The 'default' branch is executed when there are zero 'case'es
     "x"
     ```        
 
+Example: Local variables can be used inside cases
+    When running a clox file:
+    ```
+    {   // make all vars locals
+        var a = 1;
+        var b = 2;
+        switch (a){
+            case 1: {
+                var c = 3; // 'c' gets assigned call frame offset that contains copy of condition 
+                var d = 4; // 'd' gets assigned call frame offset that contains '3' 
+                print c;   
+                print d;   
+            }
+        }
+    }
+    ```
+    Then clox prints to stdout:
+    ```
+    1
+    3
+    ```
+
 Example: Semantic error: Zero 'case'es and no 'default' branch
     When running a clox file:
     ```
