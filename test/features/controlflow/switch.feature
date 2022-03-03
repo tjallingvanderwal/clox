@@ -53,6 +53,34 @@ Example: The 'default' branch is executed when there are zero 'case'es
     "x"
     ```        
 
+Example: Local variables can be used inside cases
+    When running a clox file:
+    ```
+    {   // make all vars locals
+        var a = 1;
+        var b = 2;
+        switch (a){
+            case 1: {
+                // The switch condition is kept on the stack.
+                // Verify that it does not interfere with local vars.
+                var c = 3; 
+                var d = 4; 
+                print c;    
+                print d;   
+            }
+        }
+        // Verify switch condition has been forgotten.
+        var e = 5;
+        print e; 
+    }
+    ```
+    Then clox prints to stdout:
+    ```
+    3
+    4
+    5
+    ```
+
 Example: Semantic error: Zero 'case'es and no 'default' branch
     When running a clox file:
     ```
