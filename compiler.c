@@ -262,8 +262,8 @@ static void number(bool canAssign){
 }
 
 static void string(bool canAssign){
-    emitConstant(OBJ_VAL(copyString(parser.previous.start+1,
-                                    parser.previous.length - 2)));
+    emitConstant(copyString(parser.previous.start+1,
+                            parser.previous.length - 2));
 }
 
 static void namedVariable(Token name, bool canAssign){
@@ -404,7 +404,7 @@ static void parsePrecedence(Precedence precedence){
 }
 
 static uint8_t identifierConstant(Token* name){
-    return makeConstant(OBJ_VAL(copyString(name->start, name->length)));
+    return makeConstant(copyString(name->start, name->length));
 }
 
 static bool identifiersEqual(Token* a, Token* b){

@@ -62,3 +62,27 @@ bool valuesEqual(Value a, Value b){
         default: return false; //unreachable
     }
 }
+
+static uint32_t hashBytes(const char* key, int length){
+    uint32_t hash = 2166136261u;
+    for (int i = 0; i < length; i++){
+        hash ^= (uint32_t)key[i];
+        hash *= 16777619;
+    }
+    return hash;
+}
+
+uint32_t hashValue(Value value){
+    switch(value.type){
+        case VAL_BOOL:   return (AS_BOOL(value) ?  1 : 2);
+        case VAL_NIL:    return 3;
+        case VAL_NUMBER: return hashBytes((char*)&AS_NUMBER(value), sizeof(AS_NUMBER(value)));
+        case VAL_OBJ:    
+            switch(OBJ_TYPE(value)){
+                case OBJ_STRING: return AS_STRING(value)->hash;
+                default: return (uint32_t)AS_OBJ(value);
+            }
+        
+        default: return 0; //unreachable
+    }
+}
