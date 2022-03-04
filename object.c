@@ -27,6 +27,14 @@ static ObjString* allocateString(char* chars, int length, uint32_t hash){
     return string;
 }
 
+ObjFunction* newFunction(){
+    ObjFunction* function = ALLOCATE_OBJECT(ObjFunction, OBJ_FUNCTION);
+    function->arity = 0;
+    function->name = NULL;
+    initChunk(&function->chunk);
+    return function;
+}
+
 static uint32_t hashString(const char* key, int length){
     uint32_t hash = 2166136261u;
     for (int i = 0; i < length; i++){
@@ -57,10 +65,18 @@ ObjString* copyString(const char* chars, int length){
     return allocateString(heapChars, length, hash);
 }
 
+static void fprintFunction(FILE* stream, ObjFunction* function){
+    fprintf(stream, "<fn %s>", function->name->chars);
+}
+
 void fprintObj(FILE* stream, Obj* object){
     switch(object->type){
         case OBJ_STRING: {
             fprintf(stream, "<String \"%s\">", ((ObjString*)object)->chars);
+            break;
+        }
+        case OBJ_FUNCTION: {
+            fprintFunction(stream, (ObjFunction*)object);
             break;
         }
     }
@@ -74,6 +90,10 @@ void fprintObject(FILE* stream, Value value){
     switch(OBJ_TYPE(value)){
         case OBJ_STRING: {
             fprintf(stream, "\"%s\"", AS_CSTRING(value));
+            break;
+        }
+        case OBJ_FUNCTION: {
+            fprintFunction(stream, AS_FUNCTION(value));
             break;
         }
     }
