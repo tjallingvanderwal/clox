@@ -157,6 +157,7 @@ Example: 'Defining too many locals'
     ```
     Then clox fails with:
     ```
+    [line 27] Error at 'z5': Too many local variables or constants in function.
     [line 27] Error at 'z6': Too many local variables or constants in function.
     [line 27] Error at 'z7': Too many local variables or constants in function.
     [line 27] Error at 'z8': Too many local variables or constants in function.

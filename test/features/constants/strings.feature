@@ -4,7 +4,7 @@ Example: OP_CONSTANT is used to load a String constant
     When compiling "'xyz'"
     Then the bytecode looks like:
         ```
-        == code ==
+        == <script> ==
         0000    1 OP_CONSTANT           0   # "xyz"
         0002    | OP_POP
         0003    | OP_RETURN         

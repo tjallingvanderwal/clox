@@ -40,7 +40,7 @@ Example: Code is generated for both branches when both are empty
     ```
     Then the bytecode looks like:
     ```
-    == code ==
+    == <script> ==
     0000    1 OP_FALSE        
     0001    | OP_JUMP_IF_FALSE 0001 -> 0007
     0004    2 OP_JUMP          0004 -> 0007
@@ -56,7 +56,7 @@ Example: No code is generated for the else-branch  when there is no else-branch
     ```
     Then the bytecode looks like:
     ```
-    == code ==
+    == <script> ==
     0000    1 OP_FALSE        
     0001    | OP_JUMP_IF_FALSE      0001 -> 0004
     0004    2 OP_RETURN       

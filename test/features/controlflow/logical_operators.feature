@@ -7,23 +7,23 @@ Example: 'and' evaluates its right operand when the left is true
     Then clox prints to stdout:
     ```
     == execution ==
-            stack: <empty>
+            stack: [ <script> ]
     0000    1 OP_TRUE
-            stack: [ true ]
+            stack: [ <script> ][ true ]
     0001    | OP_DUP
-            stack: [ true ][ true ]
+            stack: [ <script> ][ true ][ true ]
     0002    | OP_JUMP_IF_FALSE 0002 -> 0007
-            stack: [ true ]
+            stack: [ <script> ][ true ]
     0005    | OP_POP
-            stack: <empty>
+            stack: [ <script> ]
     0006    | OP_FALSE
-            stack: [ false ]
+            stack: [ <script> ][ false ]
     0007    | OP_PRINT
 
     == output ==
     false
 
-            stack: <empty>
+            stack: [ <script> ]
     0008    | OP_RETURN
     ```
 
@@ -32,19 +32,19 @@ Example: 'and' does not evaluate its right operand when the left is false
     Then clox prints to stdout:
     ```
     == execution ==
-            stack: <empty>
+            stack: [ <script> ]
     0000    1 OP_FALSE
-            stack: [ false ]
+            stack: [ <script> ][ false ]
     0001    | OP_DUP
-            stack: [ false ][ false ]
+            stack: [ <script> ][ false ][ false ]
     0002    | OP_JUMP_IF_FALSE 0002 -> 0007
-            stack: [ false ]
+            stack: [ <script> ][ false ]
     0007    | OP_PRINT
 
     == output ==
     false
 
-            stack: <empty>
+            stack: [ <script> ]
     0008    | OP_RETURN
     ```
 
@@ -55,23 +55,23 @@ Example: 'or' evaluates its right operand when the left is false
     Then clox prints to stdout:
     ```
     == execution ==
-          stack: <empty>
+            stack: [ <script> ]
     0000    1 OP_FALSE
-            stack: [ false ]
+            stack: [ <script> ][ false ]
     0001    | OP_DUP
-            stack: [ false ][ false ]
+            stack: [ <script> ][ false ][ false ]
     0002    | OP_JUMP_IF_FALSE 0002 -> 0008
-            stack: [ false ]
+            stack: [ <script> ][ false ]
     0008    | OP_POP
-            stack: <empty>
+            stack: [ <script> ]
     0009    | OP_TRUE
-            stack: [ true ]
+            stack: [ <script> ][ true ]
     0010    | OP_PRINT
 
     == output ==
     true
 
-            stack: <empty>
+            stack: [ <script> ]
     0011    | OP_RETURN
     ```
 
@@ -80,20 +80,20 @@ Example: 'or' does not evaluate its right operand when the left is true
     Then clox prints to stdout:
     ```
     == execution ==
-            stack: <empty>
+            stack: [ <script> ]
     0000    1 OP_TRUE
-            stack: [ true ]
+            stack: [ <script> ][ true ]
     0001    | OP_DUP
-            stack: [ true ][ true ]
+            stack: [ <script> ][ true ][ true ]
     0002    | OP_JUMP_IF_FALSE 0002 -> 0008
-            stack: [ true ]
+            stack: [ <script> ][ true ]
     0005    | OP_JUMP          0005 -> 0010
-            stack: [ true ]
+            stack: [ <script> ][ true ]
     0010    | OP_PRINT
 
     == output ==
     true
 
-            stack: <empty>
+            stack: [ <script> ]
     0011    | OP_RETURN
     ```

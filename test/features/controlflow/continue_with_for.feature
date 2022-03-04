@@ -124,7 +124,7 @@ Example: Bytecode for continuing from inside of nested scopes
     # 0020           -> x is popped in the regular flow    
     Then the bytecode looks like:
     ```
-    == code ==
+    == <script> ==
     0000    1 OP_SKIP         
     0001    | OP_JUMP          0001 -> 0021
     0004    | OP_CONSTANT           0   # 0

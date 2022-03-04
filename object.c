@@ -66,7 +66,12 @@ ObjString* copyString(const char* chars, int length){
 }
 
 static void fprintFunction(FILE* stream, ObjFunction* function){
-    fprintf(stream, "<fn %s>", function->name->chars);
+    if (function->name != NULL){
+        fprintf(stream, "<fn %s>", function->name->chars);
+    }
+    else {
+        fprintf(stream, "<script>");
+    }
 }
 
 void fprintObj(FILE* stream, Obj* object){

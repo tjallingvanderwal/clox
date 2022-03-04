@@ -4,7 +4,7 @@ Example: OP_CONSTANT_LONG is used when there are more than 4 constants
     When compiling "1 + '2' + 3 + '4' + 5 + '6'"
     Then the bytecode looks like:
         ```
-        == code ==
+        == <script> ==
         0000    1 OP_CONSTANT           0   # 1
         0002    | OP_CONSTANT           1   # "2"
         0004    | OP_ADD          

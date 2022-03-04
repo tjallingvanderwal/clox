@@ -22,7 +22,7 @@ Example: Bytecode for a>=b is !(a<b)
     When compiling "2 >= 1"
     Then the bytecode looks like:
         ```
-        == code ==
+        == <script> ==
         0000    1 OP_CONSTANT           0   # 2
         0002    | OP_CONSTANT           1   # 1
         0004    | OP_LESS         

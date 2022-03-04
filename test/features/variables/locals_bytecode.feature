@@ -7,7 +7,7 @@ Example: Bytecode for a scope without local variables
     ```
     Then the bytecode looks like:
     ```
-    == code ==
+    == <script> ==
     0000    1 OP_CONSTANT           0   # 1
     0002    | OP_PRINT        
     0003    | OP_RETURN       
@@ -25,7 +25,7 @@ Example: Bytecode for a scope with a single local variable
     # 0002 -> The var is discarded using OP_POP
     Then the bytecode looks like:
     ```
-    == code == 
+    == <script> == 
     0000    2 OP_CONSTANT 0 # 1 
     0002    3 OP_POP 
     0003    | OP_RETURN 
@@ -47,7 +47,7 @@ Example: Bytecode for a scope with three local variables
     # 0006 -> All three vars are discarded using OP_POPN
     Then the bytecode looks like:
     ```
-    == code ==
+    == <script> ==
     0000    2 OP_CONSTANT           0   # 1
     0002    3 OP_CONSTANT           1   # 2
     0004    4 OP_CONSTANT           2   # 3
@@ -76,7 +76,7 @@ Example: Bytecode for local variables in nested scopes
     # 0010 -> x and y are discared using OP_POPN
     Then the bytecode looks like:
     ```
-    == code ==
+    == <script> ==
     0000    2 OP_CONSTANT           0   # 1
     0002    4 OP_CONSTANT           1   # 2
     0004    5 OP_CONSTANT           2   # 3

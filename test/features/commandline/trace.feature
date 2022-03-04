@@ -5,18 +5,18 @@ Example: --trace shows every step of execution
     Then clox prints to stdout:
     ```
     == execution ==
-            stack: <empty>
+            stack: [ <script> ]
     0000    1 OP_CONSTANT           0   # 1
-            stack: [ 1 ]
+            stack: [ <script> ][ 1 ]
     0002    | OP_CONSTANT           1   # 2
-            stack: [ 1 ][ 2 ]
+            stack: [ <script> ][ 1 ][ 2 ]
     0004    | OP_ADD          
-            stack: [ 3 ]
+            stack: [ <script> ][ 3 ]
     0005    | OP_PRINT        
 
     == output ==
     3
-            stack: <empty>
+            stack: [ <script> ]
     0006    | OP_RETURN
     ```
 

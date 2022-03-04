@@ -45,6 +45,11 @@ typedef struct {
     bool anonymous;
 } Local;
 
+typedef enum {
+    TYPE_FUNCTION,
+    TYPE_SCRIPT
+} FunctionType;
+
 typedef struct Loop {
     struct Loop* enclosing;
     int breakTarget;
@@ -54,6 +59,8 @@ typedef struct Loop {
 } Loop;
 
 typedef struct {
+    ObjFunction* function;
+    FunctionType type;
     Local locals[UINT8_COUNT];
     Loop* currentLoop;
     int localCount;
@@ -62,10 +69,9 @@ typedef struct {
 
 Parser parser;
 Compiler* current = NULL;
-Chunk* compilingChunk;
 
 static Chunk* currentChunk(){
-    return compilingChunk;
+    return &current->function->chunk;
 }
 
 static void errorAt(Token* token, const char* message){
@@ -186,11 +192,19 @@ static void patchJump(int offset){
     currentChunk()->code[offset + 1] = jump & 0xFF;
 }
 
-static void initCompiler(Compiler* compiler){
+static void initCompiler(Compiler* compiler, FunctionType type){
+    compiler->type = type;
+    compiler->function = NULL;  // GC-related paranoia
     compiler->localCount = 0;
     compiler->scopeDepth = 0;
     compiler->currentLoop = NULL;
+    compiler->function = newFunction();
     current = compiler;
+
+    Local* local = &current->locals[current->localCount++];
+    local->depth = 0;
+    local->name.start = "";
+    local->name.length = 0;
 }
 
 static uint8_t makeConstant(Value value) {
@@ -203,11 +217,16 @@ static uint8_t makeConstant(Value value) {
   return (uint8_t)constant;
 }
 
-static void endCompiler(){
+static ObjFunction* endCompiler(){
     emitReturn();
+    ObjFunction* function = current->function;
+
     if (cloxRun.showBytecode){
-        disassembleChunk(currentChunk(), "code");
+        char* label = function->name != NULL ? function->name->chars : "<script>"; 
+        disassembleChunk(&function->chunk, label);
     }
+    
+    return function;
 }
 
 static void beginScope(){
@@ -894,12 +913,11 @@ static void statement(){
     }
 }
 
-bool compile(const char* source, Chunk* chunk){
+ObjFunction* compile(const char* source){
     initScanner(source);
     Compiler compiler;
-    initCompiler(&compiler);
-    compilingChunk = chunk;
-
+    initCompiler(&compiler, TYPE_SCRIPT);
+    
     parser.hadError = false;
     parser.panicMode = false;
 
@@ -909,6 +927,6 @@ bool compile(const char* source, Chunk* chunk){
         declaration();
     }
 
-    endCompiler();
-    return !parser.hadError;
+    ObjFunction* function = endCompiler();
+    return parser.hadError ? NULL : function;
 }

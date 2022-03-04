@@ -10,20 +10,20 @@ Example: Two identical literals point to the same ObjString object
     Then clox prints to stdout:
     ```
     == execution ==
-            stack: <empty>
-            heap : [ <String "a"> ]
+            stack: [ <script> ]
+            heap : [ <String "a"> ][ <script> ]
     0000    1 OP_CONSTANT           0   # "a"
-            stack: [ "a" ]
-            heap : [ <String "a"> ]
+            stack: [ <script> ][ "a" ]
+            heap : [ <String "a"> ][ <script> ]
     0002    | OP_CONSTANT           1   # "a"
-            stack: [ "a" ][ "a" ]
-            heap : [ <String "a"> ]
+            stack: [ <script> ][ "a" ][ "a" ]
+            heap : [ <String "a"> ][ <script> ]
     0004    | OP_ADD          
-            stack: [ "aa" ]
-            heap : [ <String "aa"> ][ <String "a"> ]
+            stack: [ <script> ][ "aa" ]
+            heap : [ <String "aa"> ][ <String "a"> ][ <script> ]
     0005    | OP_POP
-            stack: <empty> 
-            heap : [ <String "aa"> ][ <String "a"> ]
+            stack: [ <script> ] 
+            heap : [ <String "aa"> ][ <String "a"> ][ <script> ]
     0006    | OP_RETURN       
     ```
 
@@ -37,25 +37,25 @@ Example: The result of a concatenation is mapped to be the same ObjString as a l
     Then clox prints to stdout:
     ```
     == execution ==
-            stack: <empty>
-            heap : [ <String "aa"> ][ <String "a"> ]
+            stack: [ <script> ]
+            heap : [ <String "aa"> ][ <String "a"> ][ <script> ]
     0000    1 OP_CONSTANT           0   # "a"
-            stack: [ "a" ]
-            heap : [ <String "aa"> ][ <String "a"> ]
+            stack: [ <script> ][ "a" ]
+            heap : [ <String "aa"> ][ <String "a"> ][ <script> ]
     0002    | OP_CONSTANT           1   # "a"
-            stack: [ "a" ][ "a" ]
-            heap : [ <String "aa"> ][ <String "a"> ]
+            stack: [ <script> ][ "a" ][ "a" ]
+            heap : [ <String "aa"> ][ <String "a"> ][ <script> ]
     0004    | OP_ADD          
-            stack: [ "aa" ]
-            heap : [ <String "aa"> ][ <String "a"> ]
+            stack: [ <script> ][ "aa" ]
+            heap : [ <String "aa"> ][ <String "a"> ][ <script> ]
     0005    | OP_CONSTANT           2   # "aa"
-            stack: [ "aa" ][ "aa" ]
-            heap : [ <String "aa"> ][ <String "a"> ]
+            stack: [ <script> ][ "aa" ][ "aa" ]
+            heap : [ <String "aa"> ][ <String "a"> ][ <script> ]
     0007    | OP_EQUAL        
-            stack: [ true ]
-            heap : [ <String "aa"> ][ <String "a"> ]
+            stack: [ <script> ][ true ]
+            heap : [ <String "aa"> ][ <String "a"> ][ <script> ]
     0008    | OP_POP
-            stack: <empty>
-            heap : [ <String "aa"> ][ <String "a"> ]
+            stack: [ <script> ]
+            heap : [ <String "aa"> ][ <String "a"> ][ <script> ]
     0009    | OP_RETURN       
     ```

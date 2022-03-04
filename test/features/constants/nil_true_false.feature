@@ -4,7 +4,7 @@ Example: OP_NIL is used to load Nil
     When compiling "nil"
     Then the bytecode looks like:
         ```
-        == code ==
+        == <script> ==
         0000    1 OP_NIL
         0001    | OP_POP
         0002    | OP_RETURN       
@@ -15,7 +15,7 @@ Example: OP_TRUE is used to load True
     When compiling "true"
     Then the bytecode looks like:
         ```
-        == code ==
+        == <script> ==
         0000    1 OP_TRUE
         0001    | OP_POP
         0002    | OP_RETURN  
@@ -26,7 +26,7 @@ Example: OP_FALSE is used to load False
     When compiling "false"
     Then the bytecode looks like:
         ```
-        == code ==
+        == <script> ==
         0000    1 OP_FALSE
         0001    | OP_POP
         0002    | OP_RETURN  

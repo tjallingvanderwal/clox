@@ -23,22 +23,22 @@ Example: The stack is modified in-place
     Then clox prints to stdout:
     ```
     == execution ==
-            stack: <empty>
+            stack: [ <script> ]
     0000    1 OP_TRUE         
-            stack: [ true ]
+            stack: [ <script> ][ true ]
     0001    | OP_FALSE        
-            stack: [ true ][ false ]
+            stack: [ <script> ][ true ][ false ]
     0002    | OP_NOT          
-            stack: [ true ][ true ]
+            stack: [ <script> ][ true ][ true ]
     0003    | OP_NOT          
-            stack: [ true ][ false ]
+            stack: [ <script> ][ true ][ false ]
     0004    | OP_EQUAL        
-            stack: [ false ]
+            stack: [ <script> ][ false ]
     0005    | OP_PRINT
             
     == output ==
     false
 
-            stack: <empty>
+            stack: [ <script> ]
     0006    | OP_RETURN       
     ```

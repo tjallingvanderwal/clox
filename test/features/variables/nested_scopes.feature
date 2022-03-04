@@ -16,7 +16,7 @@ Example: Local variables for nested scopes are popped in one go
     # The POPN at 0009 and POP at 0011 should be coalesced into a single opcode.
     Then the bytecode looks like:
     ```
-    == code ==
+    == <script> ==
     0000    2 OP_CONSTANT           0   # 1
     0002    4 OP_CONSTANT           1   # 2
     0004    5 OP_GET_LOCAL          0
