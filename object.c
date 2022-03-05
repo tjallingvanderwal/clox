@@ -67,7 +67,7 @@ ObjString* copyString(const char* chars, int length){
 
 static void fprintFunction(FILE* stream, ObjFunction* function){
     if (function->name != NULL){
-        fprintf(stream, "<fn %s>", function->name->chars);
+        fprintf(stream, "<fn %s(%d)>", function->name->chars, function->arity);
     }
     else {
         fprintf(stream, "<script>");
