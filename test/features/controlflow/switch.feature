@@ -39,7 +39,7 @@ Example: The 'default' branch is optional
     # Nothing happens
     Then clox prints to stdout:
     ```
-    ```    
+    ```
 
 Example: The 'default' branch is executed when there are zero 'case'es
     When running a clox file:
@@ -51,7 +51,7 @@ Example: The 'default' branch is executed when there are zero 'case'es
     Then clox prints to stdout:
     ```
     "x"
-    ```        
+    ```
 
 Example: Local variables can be used inside cases
     When running a clox file:
@@ -63,15 +63,15 @@ Example: Local variables can be used inside cases
             case 1: {
                 // The switch condition is kept on the stack.
                 // Verify that it does not interfere with local vars.
-                var c = 3; 
-                var d = 4; 
-                print c;    
-                print d;   
+                var c = 3;
+                var d = 4;
+                print c;
+                print d;
             }
         }
         // Verify switch condition has been forgotten.
         var e = 5;
-        print e; 
+        print e;
     }
     ```
     Then clox prints to stdout:
@@ -99,7 +99,7 @@ Example: Syntax error: Missing '('
     Then clox fails with:
     ```
     [line 1] Error at 'nil': Expect '(' after 'switch'.
-    ```    
+    ```
 
 Example: Syntax error: Missing ')'
     When running a clox file:
@@ -109,7 +109,7 @@ Example: Syntax error: Missing ')'
     Then clox fails with:
     ```
     [line 1] Error at '{': Expect ')' after condition.
-    ```    
+    ```
 
 Example: Syntax error: Missing '{'
     When running a clox file:
@@ -119,7 +119,7 @@ Example: Syntax error: Missing '{'
     Then clox fails with:
     ```
     [line 1] Error at '}': Expect '{' to start list of cases.
-    ```        
+    ```
 
 Example: Syntax error: Missing '}'
     When running a clox file:
@@ -129,7 +129,7 @@ Example: Syntax error: Missing '}'
     Then clox fails with:
     ```
     [line 1] Error at end: Expect '}' to end list of cases.
-    ```        
+    ```
 
 Example: Syntax error: Missing ':' after case expression
     When running a clox file:
@@ -141,7 +141,7 @@ Example: Syntax error: Missing ':' after case expression
     Then clox fails with:
     ```
     [line 2] Error at 'print': Expect ':' after 'case' expression.
-    ```            
+    ```
 
 Example: Syntax error: Missing ':' after default
     When running a clox file:
@@ -153,4 +153,4 @@ Example: Syntax error: Missing ':' after default
     Then clox fails with:
     ```
     [line 2] Error at 'print': Expect ':' after 'default'
-    ```            
+    ```

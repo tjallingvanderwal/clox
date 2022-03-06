@@ -98,38 +98,38 @@ static void fprintUsage(FILE* stream){
 int main(int argc, const char* argv[]){
     // Scan for known command line flags
     for (int i=1; i<argc; i++){
-        if (memcmp(argv[i], "--bytecode", 10) == 0){ 
-            cloxRun.showBytecode = true; 
+        if (memcmp(argv[i], "--bytecode", 10) == 0){
+            cloxRun.showBytecode = true;
             cloxRun.noExecution = true;
-            cloxRun.printResultVerbose = true; 
-        }
-        else if (memcmp(argv[i], "--eval", 6) == 0){ 
-            cloxRun.eval = true; 
-            cloxRun.evalExpressionIndex = i + 1; 
-            cloxRun.printResult = true;  
-        }
-        else if (memcmp(argv[i], "--help", 6) == 0){ 
-            cloxRun.help = true; 
-        }
-        else if (memcmp(argv[i], "--file", 6) == 0){ 
-            cloxRun.file = true; 
-            cloxRun.filePathIndex = i + 1;
-            cloxRun.printResult = true;  
-        }
-        else if (memcmp(argv[i], "--memory", 8) == 0){ 
-            cloxRun.traceExecution = true; 
-            cloxRun.traceMemory = true; 
             cloxRun.printResultVerbose = true;
         }
-        else if (memcmp(argv[i], "--no-run", 8) == 0){ 
-            cloxRun.noExecution = true; 
-        }
-        else if (memcmp(argv[i], "--repl", 7) == 0){ 
-            cloxRun.repl = true; 
+        else if (memcmp(argv[i], "--eval", 6) == 0){
+            cloxRun.eval = true;
+            cloxRun.evalExpressionIndex = i + 1;
             cloxRun.printResult = true;
         }
-        else if (memcmp(argv[i], "--trace", 7) == 0){ 
-            cloxRun.traceExecution = true; 
+        else if (memcmp(argv[i], "--help", 6) == 0){
+            cloxRun.help = true;
+        }
+        else if (memcmp(argv[i], "--file", 6) == 0){
+            cloxRun.file = true;
+            cloxRun.filePathIndex = i + 1;
+            cloxRun.printResult = true;
+        }
+        else if (memcmp(argv[i], "--memory", 8) == 0){
+            cloxRun.traceExecution = true;
+            cloxRun.traceMemory = true;
+            cloxRun.printResultVerbose = true;
+        }
+        else if (memcmp(argv[i], "--no-run", 8) == 0){
+            cloxRun.noExecution = true;
+        }
+        else if (memcmp(argv[i], "--repl", 7) == 0){
+            cloxRun.repl = true;
+            cloxRun.printResult = true;
+        }
+        else if (memcmp(argv[i], "--trace", 7) == 0){
+            cloxRun.traceExecution = true;
             cloxRun.printResultVerbose = true;
         }
         else if (memcmp(argv[i], "--", 2) == 0){
@@ -144,7 +144,7 @@ int main(int argc, const char* argv[]){
         fprintUsage(stdout);
         exit(0);
     }
-    
+
     // Check that exactly 1 run mode is selected
     int selected = 0;
     if (cloxRun.eval) selected += 1;
@@ -168,13 +168,13 @@ int main(int argc, const char* argv[]){
     if (cloxRun.eval){
         if (cloxRun.evalExpressionIndex < argc){
             eval(argv[cloxRun.evalExpressionIndex]);
-        } 
+        }
         else {
             fprintf(stderr, "Specify expression to evaluate after --eval\n\n");
             fprintUsage(stderr);
             exit(64);
         }
-    } 
+    }
     if (cloxRun.file){
         if (cloxRun.filePathIndex < argc){
             runFile(argv[cloxRun.filePathIndex]);
@@ -184,8 +184,8 @@ int main(int argc, const char* argv[]){
             fprintUsage(stderr);
             exit(64);
         }
-    } 
-    if (cloxRun.repl){ 
+    }
+    if (cloxRun.repl){
         repl();
     }
 

@@ -34,7 +34,7 @@ Example: A nested loop
     3
     6
     9
-    ```    
+    ```
 
 Example: Syntax error: missing '(' after 'for'
     When running a clox file:
@@ -56,7 +56,7 @@ Example: Semantic error: const in the initializer
     Then clox fails with:
     ```
     [line 1] Error at 'const': Cannot declare a constant in the initializer of a for loop.
-    ``` 
+    ```
 
 Example: Syntax error: missing ';' after condition
     When running a clox file:
@@ -66,7 +66,7 @@ Example: Syntax error: missing ';' after condition
     Then clox fails with:
     ```
     [line 1] Error at ')': Expect ';' after loop condition.
-    ``` 
+    ```
 
 Example: Syntax error: missing ')' after increment
     When running a clox file:
@@ -78,4 +78,4 @@ Example: Syntax error: missing ')' after increment
     Then clox fails with:
     ```
     [line 1] Error at '{': Expect ')' after for clauses.
-    ``` 
+    ```

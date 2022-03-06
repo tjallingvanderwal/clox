@@ -50,4 +50,4 @@ Example: Semantic error: assigning to a formal parameter declared as const
     Then clox fails with:
     ```
     [line 2] Error at '=': Constant cannot be assigned to.
-    ```    
+    ```

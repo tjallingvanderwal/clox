@@ -127,24 +127,24 @@ Example: Bytecode for continuing from inside of nested scopes
     ```
     # 0008/0009/0010 -> a/b/c are pushed on the stack
     # 0011           -> a/b/c are all popped at once by the continue statement
-    # 0016           -> c is popped in the regular flow    
+    # 0016           -> c is popped in the regular flow
     # 0017           -> a/b are popped in the regular flow
     Then the bytecode looks like:
     ```
     == <script> ==
-    0000    1 OP_SKIP         
+    0000    1 OP_SKIP
     0001    | OP_JUMP          0001 -> 0022
-    0004    | OP_TRUE         
+    0004    | OP_TRUE
     0005    | OP_JUMP_IF_FALSE 0005 -> 0022
-    0008    2 OP_NIL          
-    0009    3 OP_NIL          
-    0010    5 OP_NIL          
+    0008    2 OP_NIL
+    0009    3 OP_NIL
+    0010    5 OP_NIL
     0011    6 OP_POPN               3
     0013    | OP_LOOP          0013 -> 0004
-    0016    7 OP_POP          
+    0016    7 OP_POP
     0017    8 OP_POPN               2
     0019    | OP_LOOP          0019 -> 0004
     0022    | OP_NIL
-    0023    | OP_RETURN       
+    0023    | OP_RETURN
     14 opcodes (24 bytes), 0 constants
     ```

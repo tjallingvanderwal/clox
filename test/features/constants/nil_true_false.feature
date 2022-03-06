@@ -8,7 +8,7 @@ Example: OP_NIL is used to load Nil
         0000    1 OP_NIL
         0001    | OP_POP
         0002    | OP_NIL
-        0003    | OP_RETURN       
+        0003    | OP_RETURN
         4 opcodes (4 bytes), 0 constants
         ```
 
@@ -20,7 +20,7 @@ Example: OP_TRUE is used to load True
         0000    1 OP_TRUE
         0001    | OP_POP
         0002    | OP_NIL
-        0003    | OP_RETURN         
+        0003    | OP_RETURN
         4 opcodes (4 bytes), 0 constants
         ```
 
@@ -32,6 +32,6 @@ Example: OP_FALSE is used to load False
         0000    1 OP_FALSE
         0001    | OP_POP
         0002    | OP_NIL
-        0003    | OP_RETURN         
+        0003    | OP_RETURN
         4 opcodes (4 bytes), 0 constants
         ```

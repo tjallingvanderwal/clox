@@ -6,7 +6,7 @@ require 'active_support/all'
 #
 # 1. Remove redundant whitespace within lines
 # 2. Remove empty lines
-# 3. Preserve newlines so that RSpec will produce nice diffs 
+# 3. Preserve newlines so that RSpec will produce nice diffs
 def normalize_ws(string)
     string.lines.map(&:squish)
                 .reject(&:blank?)

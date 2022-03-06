@@ -18,16 +18,16 @@ Example: Two identical literals point to the same ObjString object
     0002    | OP_CONSTANT           1   # "a"
             stack: [ <script> ][ "a" ][ "a" ]
             heap : [ <String "a"> ][ <script> ]
-    0004    | OP_ADD          
+    0004    | OP_ADD
             stack: [ <script> ][ "aa" ]
             heap : [ <String "aa"> ][ <String "a"> ][ <script> ]
     0005    | OP_POP
-            stack: [ <script> ] 
+            stack: [ <script> ]
             heap : [ <String "aa"> ][ <String "a"> ][ <script> ]
     0006    | OP_NIL
-            stack: [ <script> ][ nil ] 
+            stack: [ <script> ][ nil ]
             heap : [ <String "aa"> ][ <String "a"> ][ <script> ]
-    0007    | OP_RETURN       
+    0007    | OP_RETURN
     ```
 
 Example: The result of a concatenation is mapped to be the same ObjString as a literal
@@ -48,13 +48,13 @@ Example: The result of a concatenation is mapped to be the same ObjString as a l
     0002    | OP_CONSTANT           1   # "a"
             stack: [ <script> ][ "a" ][ "a" ]
             heap : [ <String "aa"> ][ <String "a"> ][ <script> ]
-    0004    | OP_ADD          
+    0004    | OP_ADD
             stack: [ <script> ][ "aa" ]
             heap : [ <String "aa"> ][ <String "a"> ][ <script> ]
     0005    | OP_CONSTANT           2   # "aa"
             stack: [ <script> ][ "aa" ][ "aa" ]
             heap : [ <String "aa"> ][ <String "a"> ][ <script> ]
-    0007    | OP_EQUAL        
+    0007    | OP_EQUAL
             stack: [ <script> ][ true ]
             heap : [ <String "aa"> ][ <String "a"> ][ <script> ]
     0008    | OP_POP
@@ -63,5 +63,5 @@ Example: The result of a concatenation is mapped to be the same ObjString as a l
     0009    | OP_NIL
             stack: [ <script> ][ nil ]
             heap : [ <String "aa"> ][ <String "a"> ][ <script> ]
-    0010    | OP_RETURN       
+    0010    | OP_RETURN
     ```

@@ -23,4 +23,4 @@ Example: Errors within the same statement are silenced
     ```
     [line 1] Error at '+': Expect expression
     [line 1] Error at '*': Expect expression
-    ```    
+    ```

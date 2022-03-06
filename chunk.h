@@ -28,9 +28,9 @@ typedef enum {
     OP_MULTIPLY,
     OP_DIVIDE,
     OP_PRINT,
-    // Skips of the next instuction, which is assumed to be one of 
+    // Skips of the next instuction, which is assumed to be one of
     // the jump instructions (1 byte opcode with a 2 byte operand).
-    OP_SKIP,  
+    OP_SKIP,
     OP_JUMP,
     OP_JUMP_IF_FALSE,
     OP_LOOP,

@@ -50,7 +50,7 @@ static bool match(char expected){
     if (isAtEnd()) return false;
     if (*scanner.current != expected) return false;
     scanner.current++;
-    return true;    
+    return true;
 }
 
 static Token makeToken(TokenType type){
@@ -93,13 +93,13 @@ static void skipWhitespace(){
                 }
                 break;
             default:
-                return; 
+                return;
         }
     }
 }
 
 static TokenType checkKeyword(int start, int length, const char* rest, TokenType type){
-    if (scanner.current - scanner.start == start + length && 
+    if (scanner.current - scanner.start == start + length &&
             memcmp(scanner.start + start, rest, length) == 0){
         return type;
     }
@@ -110,7 +110,7 @@ static TokenType identfierType(){
     switch(scanner.start[0]){
         case 'a': return checkKeyword(1, 2, "nd",    TOKEN_AND);
         case 'b': return checkKeyword(1, 4, "reak",    TOKEN_BREAK);
-        case 'c': 
+        case 'c':
             if (scanner.current - scanner.start > 1){
                 switch(scanner.start[1]){
                     case 'a': return checkKeyword(2, 2, "se",  TOKEN_CASE);
@@ -129,7 +129,7 @@ static TokenType identfierType(){
             break;
         case 'd': return checkKeyword(1, 6, "efault", TOKEN_DEFAULT);
         case 'e': return checkKeyword(1, 3, "lse",    TOKEN_ELSE);
-        case 'f': 
+        case 'f':
             if (scanner.current - scanner.start > 1){
                 switch(scanner.start[1]){
                     case 'a': return checkKeyword(2, 3, "lse", TOKEN_FALSE);
@@ -151,7 +151,7 @@ static TokenType identfierType(){
                 }
             }
         }
-        case 't': 
+        case 't':
             if (scanner.current - scanner.start > 1){
                 switch(scanner.start[1]){
                     case 'h': return checkKeyword(2, 2, "is", TOKEN_THIS);
@@ -226,7 +226,7 @@ Token scanToken(){
         case '<': return makeToken(match('=') ? TOKEN_LESS_EQUAL    : TOKEN_LESS);
         case '>': return makeToken(match('=') ? TOKEN_GREATER_EQUAL : TOKEN_GREATER);
         case '"': return scanString('"');
-        case '\'': return scanString('\''); 
+        case '\'': return scanString('\'');
     }
 
     printf("Unexpected character: ");

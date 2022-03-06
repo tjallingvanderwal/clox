@@ -11,8 +11,8 @@ void disassembleChunk(Chunk* chunk, const char* name){
         offset = disassembleInstruction(chunk, offset);
     }
     // logical size
-    printf("%d opcodes (%d bytes), %d constants\n", 
-            opcodes, chunk->count, chunk->constants.count);    
+    printf("%d opcodes (%d bytes), %d constants\n",
+            opcodes, chunk->count, chunk->constants.count);
 }
 
 static int simpleInstruction(const char* name, int offset){
@@ -52,7 +52,7 @@ static int jumpInstruction(const char* name, int sign, Chunk* chunk, int offset)
 }
 
 int disassembleInstruction(Chunk* chunk, int offset){
-    // offset 
+    // offset
     printf("%04d ", offset);
     // line number
     int line = chunk->lines[offset];
@@ -67,7 +67,7 @@ int disassembleInstruction(Chunk* chunk, int offset){
         case OP_CONSTANT:
             return constantInstruction("OP_CONSTANT", chunk, offset);
         case OP_CONSTANT_LONG:
-            return longConstantInstruction("OP_CONSTANT_LONG", chunk, offset);            
+            return longConstantInstruction("OP_CONSTANT_LONG", chunk, offset);
         case OP_DUP:
             return simpleInstruction("OP_DUP", offset);
         case OP_NIL:
@@ -75,7 +75,7 @@ int disassembleInstruction(Chunk* chunk, int offset){
         case OP_FALSE:
             return simpleInstruction("OP_FALSE", offset);
         case OP_POP:
-            return simpleInstruction("OP_POP", offset);  
+            return simpleInstruction("OP_POP", offset);
         case OP_POPN:
             return byteInstruction("OP_POPN", chunk, offset);
         case OP_SET_LOCAL:
@@ -83,7 +83,7 @@ int disassembleInstruction(Chunk* chunk, int offset){
         case OP_GET_LOCAL:
             return byteInstruction("OP_GET_LOCAL", chunk, offset);
         case OP_GET_GLOBAL:
-            return constantInstruction("OP_GET_GLOBAL", chunk, offset); 
+            return constantInstruction("OP_GET_GLOBAL", chunk, offset);
         case OP_SET_GLOBAL:
             return constantInstruction("OP_SET_GLOBAL", chunk, offset);
         case OP_DEFINE_GLOBAL:
@@ -109,7 +109,7 @@ int disassembleInstruction(Chunk* chunk, int offset){
         case OP_NOT:
             return simpleInstruction("OP_NOT", offset);
         case OP_PRINT:
-            return simpleInstruction("OP_PRINT", offset);    
+            return simpleInstruction("OP_PRINT", offset);
         case OP_SKIP:
             return simpleInstruction("OP_SKIP", offset);
         case OP_JUMP:
@@ -127,5 +127,3 @@ int disassembleInstruction(Chunk* chunk, int offset){
             return offset + 1;
     }
 }
-
-

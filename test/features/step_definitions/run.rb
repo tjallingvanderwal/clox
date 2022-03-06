@@ -9,10 +9,10 @@ def run_file(commandline, lox_code)
     file = Tempfile.open(['test', '.lox'])
     file.write(lox_code)
     file.close
-    
+
     clox = ENV['CLOX_EXECUTABLE']
     @stdout, @stderr, @status = Open3.capture3("#{clox} --file #{file.path} #{commandline}")
-    file.unlink 
+    file.unlink
 end
 
 When('running a clox file:') do |lox_code|
@@ -45,4 +45,3 @@ end
 When('compiling:') do |lox_code|
     run_file("--bytecode", lox_code)
 end
-

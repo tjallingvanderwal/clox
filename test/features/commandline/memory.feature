@@ -13,16 +13,16 @@ Example: --memory shows allocated objects during every step of execution
     0002    | OP_CONSTANT           1   # "b"
             stack: [ <script> ][ "a" ][ "b" ]
             heap : [ <String "c"> ][ <String "b"> ][ <String "a"> ][ <script> ]
-    0004    | OP_ADD          
+    0004    | OP_ADD
             stack: [ <script> ][ "ab" ]
             heap : [ <String "ab"> ][ <String "c"> ][ <String "b"> ][ <String "a"> ][ <script> ]
     0005    | OP_CONSTANT           2   # "c"
             stack: [ <script> ][ "ab" ][ "c" ]
             heap : [ <String "ab"> ][ <String "c"> ][ <String "b"> ][ <String "a"> ][ <script> ]
-    0007    | OP_ADD          
+    0007    | OP_ADD
             stack: [ <script> ][ "abc" ]
             heap : [ <String "abc"> ][ <String "ab"> ][ <String "c"> ][ <String "b"> ][ <String "a"> ][ <script> ]
-    0008    | OP_PRINT        
+    0008    | OP_PRINT
 
     == output ==
     "abc"
@@ -31,5 +31,5 @@ Example: --memory shows allocated objects during every step of execution
     0009    2 OP_NIL
             stack: [ <script> ][ nil ]
             heap : [ <String "abc"> ][ <String "ab"> ][ <String "c"> ][ <String "b"> ][ <String "a"> ][ <script> ]
-    0010    | OP_RETURN      
+    0010    | OP_RETURN
     ```

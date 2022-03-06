@@ -36,12 +36,12 @@ void fprintValue(FILE* stream, Value value){
         case VAL_NIL: {
             fprintf(stream, "nil");
             break;
-        } 
+        }
         case VAL_NUMBER: {
             fprintf(stream, "%g", AS_NUMBER(value));
             break;
         }
-        case VAL_OBJ: { 
+        case VAL_OBJ: {
             fprintObject(stream, value);
             break;
         }

@@ -65,7 +65,7 @@ static void adjustCapacity(Table* table, int capacity){
     for (int i=0; i < table->capacity; i++){
         Entry* entry = &table->entries[i];
         if (entry->key == NULL) continue;
-        Entry* dest = findEntry(entries, capacity, entry->key); 
+        Entry* dest = findEntry(entries, capacity, entry->key);
         dest->key = entry->key;
         dest->value = entry->value;
         table->count++;
@@ -123,8 +123,8 @@ ObjString* tableFindString(Table* table, const char* chars, int length, uint32_t
             // Stop if we find an empty non-tombstone entry
             if (IS_NIL(entry->value)) return NULL;
         }
-        else if (entry->key->length == length && 
-                 entry->key->hash == hash && 
+        else if (entry->key->length == length &&
+                 entry->key->hash == hash &&
                  memcmp(entry->key->chars, chars, length) == 0){
             // We found it
             return entry->key;

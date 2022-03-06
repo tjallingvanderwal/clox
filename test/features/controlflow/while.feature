@@ -40,4 +40,4 @@ Example: A nested loop
     3
     6
     9
-    ```    
+    ```

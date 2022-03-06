@@ -228,10 +228,10 @@ static ObjFunction* endCompiler(){
     ObjFunction* function = current->function;
 
     if (cloxRun.showBytecode){
-        char* label = function->name != NULL ? function->name->chars : "<script>"; 
+        char* label = function->name != NULL ? function->name->chars : "<script>";
         disassembleChunk(&function->chunk, label);
     }
-    
+
     current = current->enclosing;
     return function;
 }
@@ -329,8 +329,8 @@ static void string(bool canAssign){
 
 static void namedVariable(Token name, bool canAssign){
     uint8_t getOp, setOp;
-    
-    // Try if we can find a local with this name.    
+
+    // Try if we can find a local with this name.
     Local* local = resolveLocal(current, &name);
     int operand;
     if (local != NULL){
@@ -449,7 +449,7 @@ static void parsePrecedence(Precedence precedence){
         error("Expect expression");
         return;
     }
-    
+
     bool canAssign = (precedence <= PREC_ASSIGNMENT);
     prefixRule(canAssign);
 
@@ -479,7 +479,7 @@ static Local* resolveLocal(Compiler* compiler, Token* name){
         if (!local->anonymous && identifiersEqual(name, &local->name)){
             if (local->depth == -1){
                 error("Can't read local variable or constant in its own initializer.");
-            }    
+            }
             return local;
         }
     }
@@ -563,7 +563,7 @@ static void defineVariable(uint8_t global, bool constant){
             error("Constants not allowed at global level.");
             // Semantic error, let's continue to generate bytecode
             // as close a possible to what we would generate otherwise.
-            // return;  
+            // return;
         }
         emitBytes(OP_DEFINE_GLOBAL, global);
     }
@@ -699,14 +699,14 @@ static void whileStatement(){
     // Bookkeeping for 'break' and 'continue' statements.
     Loop whileLoop;
     startLoop(&whileLoop);
-    
+
     // Insert a jump that unconditionally jumps out of the loop.
     emitByte(OP_SKIP);
     whileLoop.breakTarget = currentChunk()->count;
     whileLoop.breakLocalCount = current->localCount;
     int breakJump = emitJump(OP_JUMP);
 
-    // This is were we jump to at the end of the loop 
+    // This is were we jump to at the end of the loop
     // (or when continue statement is used).
     int loopStart = currentChunk()->count;
 
@@ -732,16 +732,16 @@ static void forStatement(){
     // Bookkeeping for 'break' and 'continue' statements.
     Loop forLoop;
     startLoop(&forLoop);
-    
+
     // Insert a jump that unconditionally jumps out of the loop.
     emitByte(OP_SKIP);
     forLoop.breakLocalCount = current->localCount;
     forLoop.breakTarget = currentChunk()->count;
     int breakJump = emitJump(OP_JUMP);
-    
+
     // A variable declared in the initializer has its own scope.
     beginScope();
-    
+
     if (match(TOKEN_SEMICOLON)){
         // Empty initializer
     }
@@ -750,7 +750,7 @@ static void forStatement(){
     }
     else if (match(TOKEN_CONST)){
         error("Cannot declare a constant in the initializer of a for loop.");
-        // Semantic error. Consume the declaration to keep parser in sync. 
+        // Semantic error. Consume the declaration to keep parser in sync.
         constDeclaration();
     }
     else {
@@ -813,7 +813,7 @@ static void switchStatement(){
 
     // Jump to the evaluation of the first case.
     int nextCaseJump = emitJump(OP_JUMP);
-    
+
     // Instead of keeping a list of all OP_JUMPs that need patching,
     // we jump back from the end of each CASE to a jump that takes us
     // to the end of the switch.
@@ -834,15 +834,15 @@ static void switchStatement(){
         consume(TOKEN_COLON, "Expect ':' after 'case' expression.");
         // Compare condition with case.
         emitByte(OP_EQUAL);
-        // Jump to the next case when this 
+        // Jump to the next case when this
         // case does not match the condition.
         nextCaseJump = emitJump(OP_JUMP_IF_FALSE);
-        // Body of the case to be executed 
+        // Body of the case to be executed
         // when case matches condition.
         statement();
-        // Jump back to the OP_JUMP 
+        // Jump back to the OP_JUMP
         // that exits the whole switch.
-        emitLoop(exitSwitch); 
+        emitLoop(exitSwitch);
     }
 
     // Process optional 'default' case.
@@ -853,9 +853,9 @@ static void switchStatement(){
         // the previous case should jump to if that case
         // was false.
         patchJump(nextCaseJump);
-        // Body of the case to be executed. 
+        // Body of the case to be executed.
         statement();
-        // Default case is the last, so it can fall through 
+        // Default case is the last, so it can fall through
         // to the end of the switch without extra jumps.
     }
     else {
@@ -869,11 +869,11 @@ static void switchStatement(){
     // end of the switch is, and we can patch the jump that we
     // inserted at the top.
     patchJump(exitSwitchJump);
-    
-    // End the scope. This discards the anonymous local 
+
+    // End the scope. This discards the anonymous local
     // that stores the result of the condition.
     endScope();
-    
+
     consume(TOKEN_RIGHT_BRACE, "Expect '}' to end list of cases.");
 
     if (caseCount == 0){
@@ -922,7 +922,7 @@ static void synchronize(){
         if (parser.previous.type == TOKEN_SEMICOLON) return;
         switch (parser.current.type){
             case TOKEN_BREAK:
-            case TOKEN_CASE:   
+            case TOKEN_CASE:
             case TOKEN_CLASS:
             case TOKEN_CONST:
             case TOKEN_CONTINUE:
@@ -953,7 +953,7 @@ static void declaration(){
         varDeclaration();
     }
     else if (match(TOKEN_CONST)){
-        constDeclaration();        
+        constDeclaration();
     } else {
         statement();
     }
@@ -963,7 +963,7 @@ static void declaration(){
 static void statement(){
     if (match(TOKEN_PRINT)){
         printStatement();
-    } 
+    }
     else if (match(TOKEN_IF)){
         ifStatement();
     }
@@ -999,12 +999,12 @@ ObjFunction* compile(const char* source){
     initScanner(source);
     Compiler compiler;
     initCompiler(&compiler, TYPE_SCRIPT);
-    
+
     parser.hadError = false;
     parser.panicMode = false;
 
     advance();
-    
+
     while (!match(TOKEN_EOF)){
         declaration();
     }

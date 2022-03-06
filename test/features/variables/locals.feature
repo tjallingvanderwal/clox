@@ -63,7 +63,7 @@ Example: Shadowing of local variables
             var local = 2;
             {
                 var local = 3;
-                print local;        
+                print local;
             }
             print local;
         }

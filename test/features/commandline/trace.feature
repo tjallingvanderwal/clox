@@ -10,14 +10,14 @@ Example: --trace shows every step of execution
             stack: [ <script> ][ 1 ]
     0002    | OP_CONSTANT           1   # 2
             stack: [ <script> ][ 1 ][ 2 ]
-    0004    | OP_ADD          
+    0004    | OP_ADD
             stack: [ <script> ][ 3 ]
-    0005    | OP_PRINT        
+    0005    | OP_PRINT
 
     == output ==
     3
             stack: [ <script> ]
-    0006    | OP_NIL        
+    0006    | OP_NIL
             stack: [ <script> ][ nil ]
     0007    | OP_RETURN
     ```
@@ -27,4 +27,4 @@ Example: When combined with --no-run
     Then clox fails with:
     ```
     Combining --trace with --no-run makes no sense.
-    ```           
+    ```

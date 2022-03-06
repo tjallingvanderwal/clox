@@ -1,14 +1,14 @@
-Feature: Variables | Nested scopes 
+Feature: Variables | Nested scopes
 
 @pending
 Example: Local variables for nested scopes are popped in one go
-    When compiling: 
+    When compiling:
     ```
-    { 
+    {
         var x = 1;
         {
             var y = 2;
-            var z = x + y; 
+            var z = x + y;
         }
     }
     ```
@@ -21,8 +21,8 @@ Example: Local variables for nested scopes are popped in one go
     0002    4 OP_CONSTANT           1   # 2
     0004    5 OP_GET_LOCAL          0
     0006    | OP_GET_LOCAL          1
-    0008    | OP_ADD          
+    0008    | OP_ADD
     0009    6 OP_POPN               3
-    0011    | OP_RETURN       
+    0011    | OP_RETURN
     7 opcodes (11 bytes), 2 constants
     ```

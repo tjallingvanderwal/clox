@@ -27,7 +27,7 @@ static void runtimeError(const char* format, ...){
     vfprintf(stderr, format, args);
     va_end(args);
     fputs("\n", stderr);
-        
+
     for (int i = vm.frameCount - 1; i >= 0; i--){
         CallFrame* frame = &vm.frames[i];
         ObjFunction* function = frame->function;
@@ -35,7 +35,7 @@ static void runtimeError(const char* format, ...){
         fprintf(stderr, "[line %d] in ", function->chunk.lines[instruction]);
         if (function->name == NULL){
             fprintf(stderr, "script\n");
-        } 
+        }
         else {
             fprintf(stderr, "%s()\n", function->name->chars);
         }
@@ -154,20 +154,20 @@ static InterpretResult run(){
         if (trace){
             if (stackEmpty()){
                 printf("          stack: <empty>\n");
-            }   
+            }
             else {
                 printf("          stack: ");
                 for (Value* slot = vm.stack; slot < vm.stackTop; slot++){
                     printf("[ ");
                     printValue(*slot);
                     printf(" ]");
-                }   
-                printf("\n");     
+                }
+                printf("\n");
             }
             if (traceMemory){
                 if (vm.objects == NULL){
                     printf("          heap : <empty>\n");
-                } 
+                }
                 else {
                     printf("          heap : ");
                     Obj* object = vm.objects;
@@ -176,12 +176,12 @@ static InterpretResult run(){
                         printObj(object);
                         printf(" ]");
                         object = object->next;
-                    }  
-                    printf("\n");  
+                    }
+                    printf("\n");
                 }
             }
-            disassembleInstruction(&frame->function->chunk, 
-                                   (int)(frame->ip - frame->function->chunk.code));    
+            disassembleInstruction(&frame->function->chunk,
+                                   (int)(frame->ip - frame->function->chunk.code));
         }
         uint8_t instruction;
         switch (instruction = READ_BYTE()){
@@ -273,14 +273,14 @@ static InterpretResult run(){
                 if (!IS_NUMBER(*top)){
                     runtimeError("Operand must be a number.");
                     return INTERPRET_RUNTIME_ERROR;
-                }     
+                }
                 top->as.number = -(top->as.number);
                 break;
             }
             case OP_ADD: {
                 if (IS_STRING(peek(0)) && IS_STRING(peek(1))){
                     concatenate();
-                } 
+                }
                 else if (IS_NUMBER(peek(0)) && IS_NUMBER(peek(1))){
                     double b = AS_NUMBER(pop());
                     double a = AS_NUMBER(pop());
@@ -306,10 +306,10 @@ static InterpretResult run(){
                     printValue(pop());
                     printf("\n");
                 }
-                else {                   
+                else {
                     printValue(pop());
                     printf("\n");
-                }  
+                }
                 break;
             }
             case OP_SKIP: {
@@ -344,11 +344,11 @@ static InterpretResult run(){
                 Value result = pop();
                 vm.frameCount--;
                 if (vm.frameCount == 0){
-                    pop(); // Pop <script> 
+                    pop(); // Pop <script>
                     return INTERPRET_OK;
                 }
-                
-                vm.stackTop = frame->slots; // Implicitly pops arguments 
+
+                vm.stackTop = frame->slots; // Implicitly pops arguments
                 push(result);
                 frame = &vm.frames[vm.frameCount - 1];
                 break;
@@ -376,7 +376,7 @@ InterpretResult interpret(const char* source){
             push(OBJ_VAL(function));
             call(function, 0);
             result = run();
-        }    
+        }
     }
     else {
         result = INTERPRET_COMPILE_ERROR;

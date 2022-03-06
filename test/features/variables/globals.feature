@@ -64,8 +64,8 @@ Example: 'Defining too many globals'
     var j0 = 0; var j1 = 1; var j2 = 2; var j3 = 3; var j4 = 4; var j5 = 5; var j6 = 6; var j7 = 7; var j8 = 8; var j9 = 9;
     var k0 = 0; var k1 = 1; var k2 = 2; var k3 = 3; var k4 = 4; var k5 = 5; var k6 = 6; var k7 = 7; var k8 = 8; var k9 = 9;
     var l0 = 0; var l1 = 1; var l2 = 2; var l3 = 3; var l4 = 4; var l5 = 5; var l6 = 6; var l7 = 7; var l8 = 8; var l9 = 9;
-    var m0 = 0; var m1 = 1; var m2 = 2; var m3 = 3; var m4 = 4; var m5 = 5; var m6 = 6; var m7 = 7; 
-    var m8 = 8; 
+    var m0 = 0; var m1 = 1; var m2 = 2; var m3 = 3; var m4 = 4; var m5 = 5; var m6 = 6; var m7 = 7;
+    var m8 = 8;
     var m9 = 9;
     ```
     Then clox fails with:

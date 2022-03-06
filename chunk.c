@@ -46,7 +46,7 @@ void writeOPConstant(Chunk* chunk, Value value, int line){
     if (constant < 4){
         writeChunk(chunk, OP_CONSTANT, line);
         writeChunk(chunk, constant, line);
-    }  
+    }
     else if (constant < 1024){
         writeChunk(chunk, OP_CONSTANT_LONG, line);
         writeOperandLong(chunk, constant, line);
@@ -71,7 +71,7 @@ void writeOperandLong(Chunk* chunk, int operand, int line){
     writeChunk(chunk, (operand>>16) & 0x000000FF, line);
 }
 
-// Reads 3 bytes starting at the specified offset, 
+// Reads 3 bytes starting at the specified offset,
 // and recombines them into an int.
 int readOperandLong(Chunk* chunk, int offset){
     int a = chunk->code[offset];
