@@ -35,6 +35,12 @@ ObjFunction* newFunction(){
     return function;
 }
 
+ObjNative* newNative(NativeFn function){
+    ObjNative* native = ALLOCATE_OBJECT(ObjNative, OBJ_NATIVE);
+    native->function = function;
+    return native;
+}
+
 static uint32_t hashString(const char* key, int length){
     uint32_t hash = 2166136261u;
     for (int i = 0; i < length; i++){
@@ -74,6 +80,10 @@ static void fprintFunction(FILE* stream, ObjFunction* function){
     }
 }
 
+static void fprintNativeFunction(FILE* stream){
+    fprintf(stream, "<native fn>");
+}
+
 void fprintObj(FILE* stream, Obj* object){
     switch(object->type){
         case OBJ_STRING: {
@@ -82,6 +92,10 @@ void fprintObj(FILE* stream, Obj* object){
         }
         case OBJ_FUNCTION: {
             fprintFunction(stream, (ObjFunction*)object);
+            break;
+        }
+        case OBJ_NATIVE: {
+            fprintNativeFunction(stream);
             break;
         }
     }
@@ -99,6 +113,10 @@ void fprintObject(FILE* stream, Value value){
         }
         case OBJ_FUNCTION: {
             fprintFunction(stream, AS_FUNCTION(value));
+            break;
+        }
+        case OBJ_NATIVE: {
+            fprintNativeFunction(stream);
             break;
         }
     }

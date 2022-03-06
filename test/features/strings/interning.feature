@@ -11,22 +11,22 @@ Example: Two identical literals point to the same ObjString object
     ```
     == execution ==
             stack: [ <script> ]
-            heap : [ <String "a"> ][ <script> ]
+            heap : [ <String "a"> ][ <script> ][ <native fn> ][ <String "clock"> ]
     0000    1 OP_CONSTANT           0   # "a"
             stack: [ <script> ][ "a" ]
-            heap : [ <String "a"> ][ <script> ]
+            heap : [ <String "a"> ][ <script> ][ <native fn> ][ <String "clock"> ]
     0002    | OP_CONSTANT           1   # "a"
             stack: [ <script> ][ "a" ][ "a" ]
-            heap : [ <String "a"> ][ <script> ]
+            heap : [ <String "a"> ][ <script> ][ <native fn> ][ <String "clock"> ]
     0004    | OP_ADD
             stack: [ <script> ][ "aa" ]
-            heap : [ <String "aa"> ][ <String "a"> ][ <script> ]
+            heap : [ <String "aa"> ][ <String "a"> ][ <script> ][ <native fn> ][ <String "clock"> ]
     0005    | OP_POP
             stack: [ <script> ]
-            heap : [ <String "aa"> ][ <String "a"> ][ <script> ]
+            heap : [ <String "aa"> ][ <String "a"> ][ <script> ][ <native fn> ][ <String "clock"> ]
     0006    | OP_NIL
             stack: [ <script> ][ nil ]
-            heap : [ <String "aa"> ][ <String "a"> ][ <script> ]
+            heap : [ <String "aa"> ][ <String "a"> ][ <script> ][ <native fn> ][ <String "clock"> ]
     0007    | OP_RETURN
     ```
 
@@ -41,27 +41,27 @@ Example: The result of a concatenation is mapped to be the same ObjString as a l
     ```
     == execution ==
             stack: [ <script> ]
-            heap : [ <String "aa"> ][ <String "a"> ][ <script> ]
+            heap : [ <String "aa"> ][ <String "a"> ][ <script> ][ <native fn> ][ <String "clock"> ]
     0000    1 OP_CONSTANT           0   # "a"
             stack: [ <script> ][ "a" ]
-            heap : [ <String "aa"> ][ <String "a"> ][ <script> ]
+            heap : [ <String "aa"> ][ <String "a"> ][ <script> ][ <native fn> ][ <String "clock"> ]
     0002    | OP_CONSTANT           1   # "a"
             stack: [ <script> ][ "a" ][ "a" ]
-            heap : [ <String "aa"> ][ <String "a"> ][ <script> ]
+            heap : [ <String "aa"> ][ <String "a"> ][ <script> ][ <native fn> ][ <String "clock"> ]
     0004    | OP_ADD
             stack: [ <script> ][ "aa" ]
-            heap : [ <String "aa"> ][ <String "a"> ][ <script> ]
+            heap : [ <String "aa"> ][ <String "a"> ][ <script> ][ <native fn> ][ <String "clock"> ]
     0005    | OP_CONSTANT           2   # "aa"
             stack: [ <script> ][ "aa" ][ "aa" ]
-            heap : [ <String "aa"> ][ <String "a"> ][ <script> ]
+            heap : [ <String "aa"> ][ <String "a"> ][ <script> ][ <native fn> ][ <String "clock"> ]
     0007    | OP_EQUAL
             stack: [ <script> ][ true ]
-            heap : [ <String "aa"> ][ <String "a"> ][ <script> ]
+            heap : [ <String "aa"> ][ <String "a"> ][ <script> ][ <native fn> ][ <String "clock"> ]
     0008    | OP_POP
             stack: [ <script> ]
-            heap : [ <String "aa"> ][ <String "a"> ][ <script> ]
+            heap : [ <String "aa"> ][ <String "a"> ][ <script> ][ <native fn> ][ <String "clock"> ]
     0009    | OP_NIL
             stack: [ <script> ][ nil ]
-            heap : [ <String "aa"> ][ <String "a"> ][ <script> ]
+            heap : [ <String "aa"> ][ <String "a"> ][ <script> ][ <native fn> ][ <String "clock"> ]
     0010    | OP_RETURN
     ```
