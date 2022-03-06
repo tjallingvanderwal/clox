@@ -596,8 +596,9 @@ static void function(FunctionType type){
             if (current->function->arity > 255){
                 errorAtCurrent("Can't have more than 255 parameters.");
             }
-            uint8_t constant = parseVariable("Expect parameter name.", false);
-            defineVariable(constant, false);
+            bool isConst = match(TOKEN_CONST);
+            uint8_t constant = parseVariable("Expect parameter name.", isConst);
+            defineVariable(constant, isConst);
         } while (match(TOKEN_COMMA));
     }
     consume(TOKEN_RIGHT_PAREN, "Expect ')' after parameters.");
