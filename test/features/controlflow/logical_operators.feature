@@ -24,7 +24,9 @@ Example: 'and' evaluates its right operand when the left is true
     false
 
             stack: [ <script> ]
-    0008    | OP_RETURN
+    0008    | OP_NIL
+            stack: [ <script> ][ nil ]
+    0009    | OP_RETURN
     ```
 
 Example: 'and' does not evaluate its right operand when the left is false
@@ -45,7 +47,9 @@ Example: 'and' does not evaluate its right operand when the left is false
     false
 
             stack: [ <script> ]
-    0008    | OP_RETURN
+    0008    | OP_NIL
+            stack: [ <script> ][ nil ]
+    0009    | OP_RETURN
     ```
 
 Example: 'or' evaluates its right operand when the left is false
@@ -72,7 +76,9 @@ Example: 'or' evaluates its right operand when the left is false
     true
 
             stack: [ <script> ]
-    0011    | OP_RETURN
+    0011    | OP_NIL
+            stack: [ <script> ][ nil ]
+    0012    | OP_RETURN
     ```
 
 Example: 'or' does not evaluate its right operand when the left is true
@@ -95,5 +101,7 @@ Example: 'or' does not evaluate its right operand when the left is true
     true
 
             stack: [ <script> ]
-    0011    | OP_RETURN
+    0011    | OP_NIL
+            stack: [ <script> ][ nil ]
+    0012    | OP_RETURN        
     ```

@@ -28,5 +28,8 @@ Example: --memory shows allocated objects during every step of execution
     "abc"
             stack: [ <script> ]
             heap : [ <String "abc"> ][ <String "ab"> ][ <String "c"> ][ <String "b"> ][ <String "a"> ][ <script> ]
-    0009    2 OP_RETURN      
+    0009    2 OP_NIL
+            stack: [ <script> ][ nil ]
+            heap : [ <String "abc"> ][ <String "ab"> ][ <String "c"> ][ <String "b"> ][ <String "a"> ][ <script> ]
+    0010    | OP_RETURN      
     ```

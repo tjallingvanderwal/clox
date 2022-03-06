@@ -24,7 +24,10 @@ Example: Two identical literals point to the same ObjString object
     0005    | OP_POP
             stack: [ <script> ] 
             heap : [ <String "aa"> ][ <String "a"> ][ <script> ]
-    0006    | OP_RETURN       
+    0006    | OP_NIL
+            stack: [ <script> ][ nil ] 
+            heap : [ <String "aa"> ][ <String "a"> ][ <script> ]
+    0007    | OP_RETURN       
     ```
 
 Example: The result of a concatenation is mapped to be the same ObjString as a literal
@@ -57,5 +60,8 @@ Example: The result of a concatenation is mapped to be the same ObjString as a l
     0008    | OP_POP
             stack: [ <script> ]
             heap : [ <String "aa"> ][ <String "a"> ][ <script> ]
-    0009    | OP_RETURN       
+    0009    | OP_NIL
+            stack: [ <script> ][ nil ]
+            heap : [ <String "aa"> ][ <String "a"> ][ <script> ]
+    0010    | OP_RETURN       
     ```

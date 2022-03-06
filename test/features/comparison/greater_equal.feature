@@ -27,7 +27,8 @@ Example: Bytecode for a>=b is !(a<b)
         0002    | OP_CONSTANT           1   # 1
         0004    | OP_LESS         
         0005    | OP_NOT
-        0006    | OP_POP          
-        0007    | OP_RETURN       
-        6 opcodes (8 bytes), 2 constants
+        0006    | OP_POP
+        0007    | OP_NIL          
+        0008    | OP_RETURN       
+        7 opcodes (9 bytes), 2 constants
         ```

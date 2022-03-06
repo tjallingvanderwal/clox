@@ -40,5 +40,7 @@ Example: The stack is modified in-place
     5
         
             stack: [ <script> ]
-    0008    | OP_RETURN          
+    0008    | OP_NIL
+            stack: [ <script> ][ nil ]                    
+    0009    | OP_RETURN          
     ```

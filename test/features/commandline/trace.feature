@@ -17,7 +17,9 @@ Example: --trace shows every step of execution
     == output ==
     3
             stack: [ <script> ]
-    0006    | OP_RETURN
+    0006    | OP_NIL        
+            stack: [ <script> ][ nil ]
+    0007    | OP_RETURN
     ```
 
 Example: When combined with --no-run

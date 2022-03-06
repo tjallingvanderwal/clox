@@ -123,6 +123,7 @@ Example: Bytecode for breaking out of nested scopes
     0015    8 OP_POPN               2
     0017    | OP_LOOP          0017 -> 0006
     0020    | OP_POP
-    0021    | OP_RETURN
-    13 opcodes (22 bytes), 1 constants
+    0021    | OP_NIL
+    0022    | OP_RETURN
+    14 opcodes (23 bytes), 1 constants
     ```

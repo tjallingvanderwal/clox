@@ -44,8 +44,9 @@ Example: Code is generated for both branches when both are empty
     0000    1 OP_FALSE        
     0001    | OP_JUMP_IF_FALSE 0001 -> 0007
     0004    2 OP_JUMP          0004 -> 0007
-    0007    4 OP_RETURN       
-    4 opcodes (8 bytes), 0 constants
+    0007    4 OP_NIL
+    0008    | OP_RETURN       
+    5 opcodes (9 bytes), 0 constants
     ```
 
 Example: No code is generated for the else-branch  when there is no else-branch
@@ -59,6 +60,7 @@ Example: No code is generated for the else-branch  when there is no else-branch
     == <script> ==
     0000    1 OP_FALSE        
     0001    | OP_JUMP_IF_FALSE      0001 -> 0004
-    0004    2 OP_RETURN       
-    3 opcodes (5 bytes), 0 constants
+    0004    2 OP_NIL 
+    0005    | OP_RETURN       
+    4 opcodes (6 bytes), 0 constants
     ```
