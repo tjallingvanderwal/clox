@@ -666,6 +666,21 @@ static void ifStatement(){
     }
 }
 
+static void returnStatement(){
+    if (current->type == TYPE_SCRIPT){
+        error("Can't return from top-level code.");
+    }
+
+    if (match(TOKEN_SEMICOLON)){
+        emitReturn();
+    }
+    else {
+        expression();
+        consume(TOKEN_SEMICOLON, "Expect ';' after return value.");
+        emitByte(OP_RETURN);
+    }
+}
+
 // Loops are nested and we compile them recursively.
 // This allows us to store them as a linked list
 // threaded through the C stack.
@@ -949,6 +964,9 @@ static void statement(){
     } 
     else if (match(TOKEN_IF)){
         ifStatement();
+    }
+    else if (match(TOKEN_RETURN)){
+        returnStatement();
     }
     else if (match(TOKEN_FOR)){
         forStatement();
