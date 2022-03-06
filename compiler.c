@@ -71,6 +71,8 @@ typedef struct Compiler {
 Parser parser;
 Compiler* current = NULL;
 
+static int addAnonymousLocal();
+
 static Chunk* currentChunk(){
     return &current->function->chunk;
 }
@@ -207,10 +209,8 @@ static void initCompiler(Compiler* compiler, FunctionType type){
         current->function->name = copyString(parser.previous.start, parser.previous.length);
     }
 
-    Local* local = &current->locals[current->localCount++];
-    local->depth = 0;
-    local->name.start = "";
-    local->name.length = 0;
+    // reserve a local slot to store the function
+    int functionLocal = addAnonymousLocal();
 }
 
 static uint8_t makeConstant(Value value) {
@@ -510,7 +510,8 @@ static int addAnonymousLocal(){
 
     Local* local = &current->locals[current->localCount];
     local->offset = current->localCount;
-    // local->name = NULL;
+    local->name.start = "";
+    local->name.length = 0;
     local->depth = current->scopeDepth;
     local->constant = false;
     local->anonymous = true;
