@@ -41,6 +41,12 @@ ObjNative* newNative(NativeFn function){
     return native;
 }
 
+ObjClosure* newClosure(ObjFunction* function){
+    ObjClosure* closure = ALLOCATE_OBJECT(ObjClosure, OBJ_CLOSURE);
+    closure->function = function;
+    return closure;
+}
+
 static uint32_t hashString(const char* key, int length){
     uint32_t hash = 2166136261u;
     for (int i = 0; i < length; i++){
@@ -98,6 +104,10 @@ void fprintObj(FILE* stream, Obj* object){
             fprintNativeFunction(stream);
             break;
         }
+        case OBJ_CLOSURE: {
+            fprintFunction(stream, ((ObjClosure*)object)->function);
+            break;
+        }
     }
 }
 
@@ -117,6 +127,10 @@ void fprintObject(FILE* stream, Value value){
         }
         case OBJ_NATIVE: {
             fprintNativeFunction(stream);
+            break;
+        }
+        case OBJ_CLOSURE: {
+            fprintFunction(stream, AS_CLOSURE(value)->function);
             break;
         }
     }
