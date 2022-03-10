@@ -45,6 +45,12 @@ typedef struct {
     bool anonymous;
 } Local;
 
+typedef struct {
+    uint8_t index;
+    uint8_t offset;
+    bool isLocal;
+} Upvalue;
+
 typedef enum {
     TYPE_FUNCTION,
     TYPE_SCRIPT
@@ -63,6 +69,7 @@ typedef struct Compiler {
     ObjFunction* function;
     FunctionType type;
     Local locals[UINT8_COUNT];
+    Upvalue upvalues[UINT8_COUNT];
     Loop* currentLoop;
     int localCount;
     int scopeDepth;
@@ -72,6 +79,7 @@ Parser parser;
 Compiler* current = NULL;
 
 static int addAnonymousLocal();
+static Upvalue* resolveUpvalue(Compiler* compiler, Token* name);
 
 static Chunk* currentChunk(){
     return &current->function->chunk;
@@ -331,13 +339,21 @@ static void namedVariable(Token name, bool canAssign){
     uint8_t getOp, setOp;
 
     // Try if we can find a local with this name.
-    Local* local = resolveLocal(current, &name);
+    Local* local;
+    Upvalue* upvalue;
     int operand;
-    if (local != NULL){
+    if ((local = resolveLocal(current, &name)) != NULL){
         // found -> local
         getOp = OP_GET_LOCAL;
         setOp = OP_SET_LOCAL;
         operand = local->offset;
+    }
+    // Look in enclosing scopes for a local with this name
+    else if ((upvalue = resolveUpvalue(current, &name)) != NULL){
+        // found -> upvalue
+        getOp = OP_GET_UPVALUE;
+        setOp = OP_SET_UPVALUE;
+        operand = upvalue->offset;
     }
     else {
         // not found -> assume global
@@ -519,6 +535,48 @@ static int addAnonymousLocal(){
     return local->offset;
 }
 
+static Upvalue* addUpvalue(Compiler* compiler, uint8_t index, bool isLocal){
+    int upvalueCount = compiler->function->upvalueCount;
+
+    // Look for an existing Upvalue
+    for (int i=0; i<upvalueCount; i++){
+        Upvalue* upvalue = &compiler->upvalues[i];
+        if (upvalue->index == index && upvalue->isLocal == isLocal){
+            return upvalue;
+        }
+    }
+
+    if (upvalueCount == UINT8_COUNT){
+        error("Too many closure variables in function.");
+        return NULL;
+    }
+
+    Upvalue* upvalue = &compiler->upvalues[upvalueCount];
+    upvalue->isLocal = isLocal;
+    upvalue->index = index;
+
+    upvalue->offset = upvalueCount;
+    compiler->function->upvalueCount++;
+
+    return upvalue;
+}
+
+static Upvalue* resolveUpvalue(Compiler* compiler, Token* name){
+    if (compiler->enclosing == NULL) return NULL;
+
+    Local* local = resolveLocal(compiler->enclosing, name);
+    if (local != NULL){
+        return addUpvalue(compiler, (uint8_t)local->offset, true);
+    }
+
+    Upvalue* upvalue = resolveUpvalue(compiler->enclosing, name);
+    if (upvalue != NULL){
+        return addUpvalue(compiler, (uint8_t)upvalue->offset, false);
+    }
+
+    return NULL;
+}
+
 static void declareVariable(bool constant){
     if (current->scopeDepth == 0) return;
 
@@ -607,6 +665,10 @@ static void function(FunctionType type){
 
     ObjFunction* function = endCompiler();
     emitBytes(OP_CLOSURE, makeConstant(OBJ_VAL(function)));
+    for (int i=0; i<function->upvalueCount; i++){
+        emitByte(compiler.upvalues[i].isLocal ? 1 : 0);
+        emitByte(compiler.upvalues[i].index);
+    }
 }
 
 static void funDeclaration(){
