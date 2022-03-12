@@ -34,11 +34,9 @@ Example: Returning a closure
     var closure = makeClosure();
     closure();
     ```
-    Then clox fails with:
+    Then clox prints to stdout:
     ```
-    Undefined variable 'local'
-    [line 4] in closure()
-    [line 9] in script
+    "local"
     ```
 
 # Chapter 25.1
@@ -56,11 +54,10 @@ Example: Making multiple closures from the same function
     doughnut();
     bagel();
     ```
-    Then clox fails with:
+    Then clox prints to stdout:
     ```
-    Undefined variable 'value'
-    [line 3] in closure()
-    [line 9] in script
+    "doughnut"
+    "bagel"
     ```
 
 # Chapter 25.2
@@ -79,12 +76,9 @@ Example: Assigning to the captured variable
     }
     outer();
     ```
-    Then clox fails with:
+    Then clox prints to stdout:
     ```
-    Undefined variable 'x'
-    [line 6] in inner()
-    [line 9] in outer()
-    [line 11] in script
+    2
     ```
 
 # Chapte 25.3
@@ -134,13 +128,9 @@ Example: Referencing a closed over variables multiple scopes up
     ```
     "return from outer"
     "create inner closure"
+    "value"
     ```
-    Then clox fails with:
-    ```
-    Undefined variable 'x'
-    [line 6] in inner()
-    [line 19] in script
-    ```
+
 
 # Chapter 25.2.2 - flattening upvalues
 Example: Disassembly of multiple nested functions
@@ -198,4 +188,30 @@ Example: Disassembly of multiple nested functions
     0004    | OP_NIL
     0005    | OP_RETURN
     4 opcodes (6 bytes), 2 constants
+    ```
+
+# Chapter 25.4.1
+Example: A closure captures a variable, not a value
+    When running a clox file:
+    ```
+    var globalSet;
+    var globalGet;
+
+    fun main(){
+        var a = "initial";
+
+        fun set(){ a = "updated"; }
+        fun get(){ print a; }
+
+        globalSet = set;
+        globalGet = get;
+    }
+
+    main();
+    globalSet();
+    globalGet();
+    ```
+    Then clox prints to stdout:
+    ```
+    "updated"
     ```

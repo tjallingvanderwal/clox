@@ -13,6 +13,7 @@ typedef enum {
     OP_FALSE,
     OP_POP,
     OP_POPN,
+    OP_CLOSE_UPVALUE,
     OP_GET_LOCAL,
     OP_SET_LOCAL,
     OP_GET_GLOBAL,

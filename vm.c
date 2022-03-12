@@ -20,6 +20,7 @@ static Value clockNative(int argCount, Value* args){
 static void resetStack(){
     vm.stackTop = vm.stack;
     vm.frameCount = 0;
+    vm.openUpvalues = NULL;
 }
 
 static bool stackEmpty(){
@@ -129,8 +130,37 @@ static bool callValue(Value callee, int argCount){
 }
 
 static ObjUpvalue* captureUpvalue(Value* local){
+    ObjUpvalue* prevUpvalue = NULL;
+    ObjUpvalue* upvalue =  vm.openUpvalues;
+    while (upvalue != NULL && upvalue->location > local){
+        prevUpvalue = upvalue;
+        upvalue = upvalue->next;
+    }
+
+    if (upvalue != NULL && upvalue->location == local){
+        return upvalue;
+    }
+
     ObjUpvalue* createdUpvalue = newUpvalue(local);
+    createdUpvalue->next = upvalue;
+
+    if (prevUpvalue == NULL){
+        vm.openUpvalues = createdUpvalue;
+    }
+    else {
+        prevUpvalue->next = createdUpvalue;
+    }
+
     return createdUpvalue;
+}
+
+static void closeUpvalues(Value* last){
+    while (vm.openUpvalues != NULL && vm.openUpvalues->location >= last){
+        ObjUpvalue* upvalue = vm.openUpvalues;
+        upvalue->closed = *upvalue->location;
+        upvalue->location = &upvalue->closed;
+        vm.openUpvalues = upvalue->next;
+    }
 }
 
 static void concatenate(){
@@ -245,6 +275,11 @@ static InterpretResult run(){
             case OP_POPN: {
                 uint8_t slot_count = READ_BYTE();
                 vm.stackTop -= slot_count;
+                break;
+            }
+            case OP_CLOSE_UPVALUE: {
+                closeUpvalues(vm.stackTop - 1);
+                pop();
                 break;
             }
             case OP_GET_LOCAL: {
@@ -395,6 +430,7 @@ static InterpretResult run(){
             }
             case OP_RETURN: {
                 Value result = pop();
+                closeUpvalues(frame->slots);
                 vm.frameCount--;
                 if (vm.frameCount == 0){
                     pop(); // Pop <script>

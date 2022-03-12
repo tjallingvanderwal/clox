@@ -43,6 +43,7 @@ typedef struct {
     int offset;
     bool constant;
     bool anonymous;
+    bool isCaptured;
 } Local;
 
 typedef struct {
@@ -251,15 +252,15 @@ static void beginScope(){
 static void endScope(){
     current->scopeDepth--;
 
-    // Count how many locals there are in this scope.
-    int scopeCount = 0;
     while (current->localCount > 0 && current->locals[current->localCount - 1].depth > current->scopeDepth){
-        scopeCount++;
+        if (current->locals[current->localCount - 1].isCaptured){
+            emitByte(OP_CLOSE_UPVALUE);
+        }
+        else {
+            emitByte(OP_POP);
+        }
         current->localCount--;
     }
-
-    // Pop those locals off the stack to remove all variables of the current scope.
-    emitPop(scopeCount);
 }
 
 static void expression();
@@ -514,6 +515,7 @@ static void addLocal(Token name, bool constant){
     local->depth = -1;
     local->constant = constant;
     local->anonymous = false;
+    local->isCaptured = false;
     current->localCount++;
 }
 
@@ -566,6 +568,7 @@ static Upvalue* resolveUpvalue(Compiler* compiler, Token* name){
 
     Local* local = resolveLocal(compiler->enclosing, name);
     if (local != NULL){
+        compiler->enclosing->locals[local->offset].isCaptured = true;
         return addUpvalue(compiler, (uint8_t)local->offset, true);
     }
 
