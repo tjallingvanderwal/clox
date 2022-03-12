@@ -6,7 +6,7 @@ Example: A nested function captures a local from a surrounding fuction
     ```
     var x = "global";
     fun outer(){
-        var x = "inner";
+        var x = "outer";
         fun inner(){
             print x;
         }
@@ -17,7 +17,7 @@ Example: A nested function captures a local from a surrounding fuction
     # output should be "inner" instead of "global"
     Then clox prints to stdout:
     ```
-    "global"
+    "outer"
     ```
 
 # Chapter 25 Intro
@@ -64,7 +64,7 @@ Example: Making multiple closures from the same function
     ```
 
 # Chapter 25.2
-Example: Assigning to the closed over variable
+Example: Assigning to the captured variable
     When running a clox file:
     ```
     fun outer(){
@@ -85,6 +85,25 @@ Example: Assigning to the closed over variable
     [line 6] in inner()
     [line 9] in outer()
     [line 11] in script
+    ```
+
+# Chapte 25.3
+Example: Assigning to the captured variable in a function
+    When running a clox file:
+    ```
+    fun outer(){
+        var x = "before";
+        fun inner(){
+            x = "assigned";
+        }
+        inner();
+        print x;
+    }
+    outer();
+    ```
+    Then clox prints to stdout:
+    ```
+    "assigned"
     ```
 
 # Chapter 25.2.2 - flattening upvalues

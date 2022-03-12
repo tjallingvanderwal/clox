@@ -43,9 +43,23 @@ ObjNative* newNative(NativeFn function){
 }
 
 ObjClosure* newClosure(ObjFunction* function){
+    ObjUpvalue** upvalues = ALLOCATE(ObjUpvalue*, function->upvalueCount);
+    // Prevent the GC seeing uninitialized memory
+    for (int i=0; i<function->upvalueCount; i++){
+        upvalues[i] = NULL;
+    }
+
     ObjClosure* closure = ALLOCATE_OBJECT(ObjClosure, OBJ_CLOSURE);
     closure->function = function;
+    closure->upvalues = upvalues;
+    closure->upvalueCount = function->upvalueCount;
     return closure;
+}
+
+ObjUpvalue* newUpvalue(Value* slot){
+    ObjUpvalue* upvalue = ALLOCATE_OBJECT(ObjUpvalue, OBJ_UPVALUE);
+    upvalue->location = slot;
+    return upvalue;
 }
 
 static uint32_t hashString(const char* key, int length){
@@ -91,6 +105,10 @@ static void fprintNativeFunction(FILE* stream){
     fprintf(stream, "<native fn>");
 }
 
+static void fprintUpvalue(FILE* stream){
+    fprintf(stream, "<upvalue>");
+}
+
 void fprintObj(FILE* stream, Obj* object){
     switch(object->type){
         case OBJ_STRING: {
@@ -107,6 +125,10 @@ void fprintObj(FILE* stream, Obj* object){
         }
         case OBJ_CLOSURE: {
             fprintFunction(stream, ((ObjClosure*)object)->function);
+            break;
+        }
+        case OBJ_UPVALUE: {
+            fprintUpvalue(stream);
             break;
         }
     }
@@ -132,6 +154,10 @@ void fprintObject(FILE* stream, Value value){
         }
         case OBJ_CLOSURE: {
             fprintFunction(stream, AS_CLOSURE(value)->function);
+            break;
+        }
+        case OBJ_UPVALUE: {
+            fprintUpvalue(stream);
             break;
         }
     }
