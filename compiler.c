@@ -252,15 +252,18 @@ static void beginScope(){
 static void endScope(){
     current->scopeDepth--;
 
+    int popCount = 0;
     while (current->localCount > 0 && current->locals[current->localCount - 1].depth > current->scopeDepth){
         if (current->locals[current->localCount - 1].isCaptured){
+            emitPop(popCount); popCount = 0;
             emitByte(OP_CLOSE_UPVALUE);
         }
         else {
-            emitByte(OP_POP);
+            popCount++;
         }
         current->localCount--;
     }
+    emitPop(popCount); popCount = 0;
 }
 
 static void expression();
