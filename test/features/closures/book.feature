@@ -14,7 +14,6 @@ Example: A nested function captures a local from a surrounding fuction
     }
     outer();
     ```
-    # output should be "inner" instead of "global"
     Then clox prints to stdout:
     ```
     "outer"

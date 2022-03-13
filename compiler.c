@@ -245,6 +245,28 @@ static ObjFunction* endCompiler(){
     return function;
 }
 
+// Pops local variables of the stack,
+// closing Upvalues when a variable has
+// been captured.
+// Compiler->localCount is not changed,
+// for the case of break/continue statements.
+static void popOrCloseUpvalue(int localVarCount){
+    int popCount = 0;
+
+    for (int i=0; i<localVarCount; i++){
+        if (current->locals[(current->localCount - i) - 1].isCaptured){
+            emitPop(popCount);
+            popCount = 0;
+            emitByte(OP_CLOSE_UPVALUE);
+        }
+        else {
+            popCount++;
+        }
+    }
+
+    emitPop(popCount);
+}
+
 static void beginScope(){
     current->scopeDepth++;
 }
@@ -252,18 +274,15 @@ static void beginScope(){
 static void endScope(){
     current->scopeDepth--;
 
-    int popCount = 0;
-    while (current->localCount > 0 && current->locals[current->localCount - 1].depth > current->scopeDepth){
-        if (current->locals[current->localCount - 1].isCaptured){
-            emitPop(popCount); popCount = 0;
-            emitByte(OP_CLOSE_UPVALUE);
-        }
-        else {
-            popCount++;
-        }
-        current->localCount--;
+    // Count how many locals there are in the ended scope
+    int localCount = current->localCount;
+    while (localCount > 0 && current->locals[localCount - 1].depth > current->scopeDepth){
+        localCount--;
     }
-    emitPop(popCount); popCount = 0;
+
+    // Remove those locals, closing their upvalue as needed
+    popOrCloseUpvalue(current->localCount - localCount);
+    current->localCount = localCount;
 }
 
 static void expression();
@@ -957,7 +976,7 @@ static void breakStatement(){
         error("No loop to 'break' out of.");
     }
     else {
-        emitPop(compiler->localCount - loop->breakLocalCount);
+        popOrCloseUpvalue(compiler->localCount - loop->breakLocalCount);
         emitLoop(loop->breakTarget);
     }
     consume(TOKEN_SEMICOLON, "Expect ';' after 'break'.");
@@ -971,7 +990,7 @@ static void continueStatement(){
         error("No loop to 'continue' with.");
     }
     else {
-        emitPop(compiler->localCount - loop->continueLocalCount);
+        popOrCloseUpvalue(compiler->localCount - loop->continueLocalCount);
         emitLoop(loop->continueTarget);
     }
     consume(TOKEN_SEMICOLON, "Expect ';' after 'continue'.");
