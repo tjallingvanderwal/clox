@@ -181,6 +181,7 @@ void collectGarbage(){
 
     markRoots();
     traceReferences();
+    tableRemoveWhite(&vm.strings); // Sweep the string pool
     sweep();
 
 #ifdef DEBUG_LOG_GC
